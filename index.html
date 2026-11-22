@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA&display=swap" />
-  <link rel="stylesheet" href="/css/styles.css?v=908fe307" />
+  <link rel="stylesheet" href="/css/styles.css?v=4fa3258d" />
 </head>
 <body>
   <a class="skip" href="#practices">Skip to the practices</a>
@@ -1128,6 +1128,31 @@
             <p class="lab-fine">Reference ranges from Buteyko practice: under 10s — strained · 10–20s — room to grow · 20–40s — good · 40s+ — excellent. A training gauge, not a medical test.</p>
           </div>
         </div>
+        <div class="panel diary reveal" id="diary">
+          <div class="diary-head">
+            <div>
+              <h3 class="panel-title">Breathing diary</h3>
+              <p class="panel-sub">Every session, how it left you, and a few words about what you noticed. Kept privately on this device.</p>
+            </div>
+            <div class="diary-actions">
+              <button class="btn btn-ghost" type="button" id="diary-new">New note</button>
+              <button class="link-btn" type="button" id="diary-export">Download my diary</button>
+            </div>
+          </div>
+          <div class="diary-locked" id="diary-locked" hidden>
+            <p>Sign up free to keep a breathing diary and follow your progress.</p>
+            <button class="btn btn-primary" type="button" id="diary-unlock">Unlock — it's free</button>
+          </div>
+          <form class="diary-compose" id="diary-compose" hidden>
+            <label class="field"><span>Practice</span><select id="dc-practice"></select></label>
+            <label class="field"><span>Note</span><textarea id="dc-text" rows="3" maxlength="2000" placeholder="What did you notice? Sensations, mood, sleep, energy…"></textarea></label>
+            <div class="diary-row-actions"><button class="btn btn-primary" type="submit">Save note</button><button class="link-btn" type="button" id="dc-cancel">Cancel</button></div>
+          </form>
+          <div class="diary-moods" id="diary-moods" hidden></div>
+          <ol class="diary-list" id="diary-list"></ol>
+          <p class="diary-empty" id="diary-empty">Your sessions and notes will appear here.</p>
+          <button class="link-btn diary-more" type="button" id="diary-more" hidden>Show more</button>
+        </div>
         <p class="reset-row"><button class="link-btn" type="button" id="reset-data">Clear my practice history</button></p>
       </div>
     </section>
@@ -1149,7 +1174,7 @@
     <div class="wrap footer-inner">
       <a class="brand" href="#top"><svg class="mark" width="22" height="22" viewBox="-50 -50 100 100" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4"><rect x="-30" y="-30" width="60" height="60"/><rect x="-30" y="-30" width="60" height="60" transform="rotate(45)"/><circle r="11" fill="currentColor" stroke="none"/></svg><span>Neshimot</span></a>
       <p class="footer-line">Breathe in. Breathe out. Return tomorrow.</p>
-      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser.</p>
+      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser. · <a href="/privacy">Privacy</a></p>
     </div>
   </footer>
 
@@ -1176,6 +1201,7 @@
     <!-- setup -->
     <section class="pr-setup" id="pr-setup" aria-label="Session settings">
       <div class="setup-card">
+        <p class="setup-welcome" id="su-welcome" hidden></p>
         <p class="setup-pattern" id="su-pattern"></p>
         <div class="setup-plan" id="su-plan"></div>
         <div class="setup-row" id="su-dose-row">
@@ -1209,6 +1235,24 @@
           </button>
           <button class="link-btn" type="button" id="su-preview" aria-pressed="false">Hear the tones</button>
         </div>
+      </div>
+    </section>
+
+    <!-- sign-up (after the first free session) -->
+    <section class="pr-gate" id="pr-gate" aria-labelledby="gate-title">
+      <div class="setup-card gate-card">
+        <p class="eyebrow">Free · takes ten seconds</p>
+        <h3 class="gate-title" id="gate-title">Unlock all ten practices</h3>
+        <p class="gate-sub" id="gate-sub">Your first session was on us. Leave your name and email to keep practising — every practice and every ritual, free.</p>
+        <form id="gate-form" novalidate>
+          <label class="field"><span>Name</span><input id="g-name" name="name" type="text" autocomplete="name" maxlength="100" required /></label>
+          <label class="field"><span>Email</span><input id="g-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required /></label>
+          <div class="hp" aria-hidden="true"><label>Website<input name="website" id="g-website" type="text" tabindex="-1" autocomplete="off" /></label></div>
+          <label class="ack gate-consent"><input type="checkbox" id="g-consent" /> <span>Send me occasional breathing tips and updates. Unsubscribe any time.</span></label>
+          <p class="gate-error" id="g-error" role="alert"></p>
+          <button class="btn btn-primary btn-lg" type="submit" id="g-submit">Unlock &amp; continue</button>
+        </form>
+        <p class="gate-privacy">ArberTech keeps your name and email in its contact list (HubSpot) to give you access — and, only if you tick the box, to send occasional emails. We never sell your details. <a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="mailto:hernan@arbertech.com">hernan@arbertech.com</a></p>
       </div>
     </section>
 
@@ -1287,6 +1331,10 @@
       <h3 class="done-title">Well breathed.</h3>
       <p class="done-sub" id="done-sub"></p>
       <p class="done-streak" id="done-streak"></p>
+      <div class="done-unlock" id="done-unlock" hidden>
+        <p>Enjoyed it? Unlock all ten practices — it's free.</p>
+        <button class="btn btn-ghost" type="button" id="done-unlock-btn">Unlock all practices</button>
+      </div>
       <div class="mood" id="mood" role="group" aria-labelledby="mood-q">
         <p class="mood-q" id="mood-q">How do you feel?</p>
         <div class="mood-opts">
@@ -1296,6 +1344,11 @@
         </div>
         <p class="mood-thanks" id="mood-thanks" hidden>Noted — sit for a few more breaths before you go.</p>
       </div>
+      <form class="done-note" id="done-note" hidden>
+        <label class="sr-only" for="dn-text">Diary note</label>
+        <textarea id="dn-text" rows="2" maxlength="2000" placeholder="Add a note to your diary — what did you notice?"></textarea>
+        <div class="diary-row-actions"><button class="btn btn-ghost" type="submit" id="dn-save">Save to diary</button><span class="dn-saved" id="dn-saved" role="status" hidden>Saved to your diary</span></div>
+      </form>
       <div class="setup-actions">
         <button class="btn btn-primary" type="button" id="done-close">Return</button>
         <button class="link-btn" type="button" id="done-again">Practise again</button>
@@ -1333,6 +1386,6 @@
     <div class="sr-only" aria-live="polite" id="pr-live"></div>
   </div>
 
-  <script type="module" src="/js/app.js?v=908fe307"></script>
+  <script type="module" src="/js/app.js?v=4fa3258d"></script>
 </body>
 </html>

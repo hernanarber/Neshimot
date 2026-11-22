@@ -18,6 +18,7 @@ const parts = {
   version,
   count: String(COUNT),
   countword: words[COUNT] || String(COUNT),
+  countlower: (words[COUNT] || String(COUNT)).toLowerCase(),
   star: starMark(22, 'mark'),
   hourglass: ICONS.hourglass,
   figure: figureSVG({ uid: 'pr', id: 'fig', cls: 'orb-fig' }),

@@ -1,5 +1,5 @@
 // Neshimot — application controller.
-import { RITUALS, byId, cycleSeconds, roundsFor } from './data.js';
+import { EXERCISES, RITUALS, byId, cycleSeconds, roundsFor } from './data.js';
 import { BreathAudio } from './audio.js';
 import { Session } from './session.js';
 import { segmentsFor, levelAt } from './graphs.js';
@@ -289,6 +289,47 @@ function releaseScreen() {
 }
 
 /* =================================================================
+   Sign-up gate — the first session is free, then name + email.
+   A soft gate: the unlock is remembered on this device. It only appears
+   once the server reports it is connected to HubSpot.
+   ================================================================= */
+const GATE = { ready: null, checking: null };
+const unlockedUser = () => store.get('neshimot.user', null);
+const freeUsed = () => store.get('neshimot.free', false) || store.get('neshimot.log', []).length > 0;
+const needsGate = () => GATE.ready === true && !unlockedUser() && freeUsed();
+const EMAIL_OK = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[a-z]{2,}$/i;
+
+function checkGate() {
+  if (!GATE.checking) {
+    GATE.checking = fetch('/api/lead', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : { ready: false }))
+      .then((d) => (GATE.ready = !!(d && d.ready)))
+      .catch(() => (GATE.ready = false));
+  }
+  return GATE.checking;
+}
+
+/** 'ok' | 'bad-name' | 'bad-email' | 'retry' */
+async function postLead(lead) {
+  const r = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(lead) });
+  if (r.ok) return 'ok';
+  if (r.status === 400) {
+    const d = await r.json().catch(() => ({}));
+    return d.error === 'name' ? 'bad-name' : 'bad-email';
+  }
+  return 'retry';
+}
+
+/** A sign-up that couldn't reach HubSpot is retried quietly on the next visit. */
+function flushPendingLead() {
+  const pending = store.get('neshimot.pendingLead', null);
+  if (!pending) return;
+  postLead(pending)
+    .then((res) => res !== 'retry' && store.del('neshimot.pendingLead'))
+    .catch(() => {});
+}
+
+/* =================================================================
    Practice overlay
    ================================================================= */
 const audio = new BreathAudio();
@@ -311,6 +352,8 @@ const P = {
   lastLogIndex: null,
   pendingEnd: null,
   pendingScroll: null,
+  next: null, // the practice to open once the visitor has unlocked
+  afterUnlock: null, // or something else to do after unlocking (e.g. return to the diary)
 };
 
 let session;
@@ -345,6 +388,9 @@ function planSeconds(plan, pace) {
 }
 
 function renderSetup() {
+  const user = unlockedUser();
+  $('#su-welcome').hidden = !user;
+  if (user) $('#su-welcome').textContent = `Welcome back, ${String(user.name).split(' ')[0]}`;
   const plan = currentPlan();
   const pace = P.pace;
   const doseRow = $('#su-dose-row');
@@ -420,7 +466,12 @@ function setView(v) {
   P.el.dataset.view = v;
 }
 
-function openPractice({ exId, ritualId, minutes }) {
+function openPractice(target) {
+  const { exId, ritualId, minutes } = target;
+  if (needsGate()) {
+    P.next = target;
+    return openGate();
+  }
   if (session && session.state !== 'idle') session.stop(true);
   if (ritualId) {
     P.kind = 'ritual';
@@ -444,8 +495,11 @@ function openPractice({ exId, ritualId, minutes }) {
   P.el.classList.remove('is-paused');
   $('#orb').style.setProperty('--lvl', 0.32);
 
-  const wasHidden = P.el.hidden;
-  if (wasHidden) {
+  showOverlay($('#su-start'), $('#su-start'));
+}
+
+function showOverlay(center, focusEl) {
+  if (P.el.hidden) {
     P.lastFocus = document.activeElement;
     P.el.hidden = false;
     document.body.classList.add('is-locked');
@@ -455,12 +509,45 @@ function openPractice({ exId, ritualId, minutes }) {
       P.pushed = true;
     } catch (_) {}
   }
-  sand.setCenter($('#su-start'));
+  sand.setCenter(center);
   sand.level = 0.3;
   sand.phase = 'rest';
   sand.paused = false;
   sand.start();
-  setTimeout(() => $('#su-start').focus({ preventScroll: true }), 60);
+  setTimeout(() => focusEl && focusEl.focus({ preventScroll: true }), 60);
+}
+
+function openGate(after = null) {
+  P.afterUnlock = after;
+  if (session && session.state !== 'idle') session.stop(true);
+  $('#pr-item').textContent = 'Neshimot';
+  $('#pr-title').textContent = 'Keep practising';
+  $('#g-error').textContent = '';
+  setView('gate');
+  P.el.dataset.phase = 'rest';
+  P.el.classList.remove('is-paused');
+  showOverlay($('.gate-card'), $('#g-name'));
+}
+
+function completeUnlock(name) {
+  const first = name.split(' ')[0];
+  $('#pr-live').textContent = `Welcome, ${first}. All practices are unlocked.`;
+  renderDiary();
+  const next = P.next;
+  P.next = null;
+  if (next) return openPractice(next);
+  const after = P.afterUnlock;
+  P.afterUnlock = null;
+  if (after) return after();
+  // unlocked from the completion screen: stay there, say thanks, open the diary note
+  const box = $('#done-unlock');
+  box.replaceChildren(Object.assign(document.createElement('p'), { textContent: `You're in, ${first} — every practice is now open.` }));
+  box.hidden = false;
+  $('#done-note').hidden = false;
+  $('#pr-item').textContent = 'Complete';
+  $('#pr-title').textContent = P.kind === 'ritual' ? P.ritual.title : P.ex.name;
+  setView('done');
+  P.el.dataset.phase = 'in';
 }
 
 function teardown() {
@@ -701,6 +788,11 @@ function onState(s) {
     $('#pr-item').textContent = 'Complete';
     const streak = streakDays();
     $('#done-streak').textContent = streak > 1 ? `${streak} days in a row — keep the rhythm going.` : streak === 1 ? 'Day one of your streak. See you tomorrow.' : '';
+    $('#done-unlock').hidden = !(GATE.ready === true && !unlockedUser());
+    $('#done-note').hidden = !diaryEnabled();
+    $('#dn-text').value = '';
+    $('#dn-saved').hidden = true;
+    $('#dn-save').textContent = 'Save to diary';
     $$('#mood [data-mood]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
     $('#mood-thanks').hidden = true;
     $('#pr-live').textContent = 'Session complete. Well breathed.';
@@ -718,10 +810,11 @@ function logProgress(e) {
   if (secs >= 60 || (session.state === 'done' && secs >= 20)) {
     session._logged = true;
     const log = store.get('neshimot.log', []);
-    log.push({ d: today(), m: Math.round((secs / 60) * 10) / 10, id: P.kind === 'ritual' ? `ritual:${P.ritual.id}` : P.ex.id });
+    log.push({ d: today(), at: Date.now(), m: Math.round((secs / 60) * 10) / 10, id: P.kind === 'ritual' ? `ritual:${P.ritual.id}` : P.ex.id });
     const kept = log.slice(-800);
     store.set('neshimot.log', kept);
     P.lastLogIndex = kept.length - 1;
+    store.set('neshimot.free', true);
     renderProgress();
   }
   return secs;
@@ -762,6 +855,66 @@ function initPractice() {
     if (pend) doEnd(pend.kind);
   });
   $('#cf-cancel').addEventListener('click', cancelEnd);
+  $('#done-unlock-btn').addEventListener('click', () => {
+    P.next = null;
+    openGate();
+  });
+  $('#done-note').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = $('#dn-text').value.trim();
+    if (!text) return $('#dn-text').focus();
+    const id = P.kind === 'ritual' ? `ritual:${P.ritual.id}` : P.ex.id;
+    const log = store.get('neshimot.log', []);
+    if (P.lastLogIndex != null && log[P.lastLogIndex]) {
+      log[P.lastLogIndex].note = text;
+      store.set('neshimot.log', log);
+    } else {
+      const notes = store.get('neshimot.notes', []);
+      notes.push({ at: Date.now(), d: today(), id, text });
+      store.set('neshimot.notes', notes);
+    }
+    $('#dn-saved').hidden = false;
+    $('#dn-save').textContent = 'Update note';
+    renderDiary();
+  });
+  $('#gate-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = $('#g-name').value.trim().replace(/\s+/g, ' ');
+    const email = $('#g-email').value.trim();
+    const err = $('#g-error');
+    if (!name) {
+      err.textContent = 'Please enter your name.';
+      return $('#g-name').focus();
+    }
+    if (!EMAIL_OK.test(email)) {
+      err.textContent = 'Please enter a valid email address.';
+      return $('#g-email').focus();
+    }
+    err.textContent = '';
+    const btn = $('#g-submit');
+    btn.disabled = true;
+    btn.textContent = 'Unlocking…';
+    const target = P.next || {};
+    const lead = { name, email, consent: $('#g-consent').checked, website: $('#g-website').value, practice: target.exId || target.ritualId || '' };
+    let res = 'retry';
+    try {
+      res = await postLead(lead);
+    } catch (_) {}
+    btn.disabled = false;
+    btn.textContent = 'Unlock & continue';
+    if (res === 'bad-email') {
+      err.textContent = 'That email doesn’t look right — please check it.';
+      return $('#g-email').focus();
+    }
+    if (res === 'bad-name') {
+      err.textContent = 'Please enter your name.';
+      return $('#g-name').focus();
+    }
+    // never block someone because of our own hiccup — retried on their next visit
+    if (res === 'retry') store.set('neshimot.pendingLead', lead);
+    store.set('neshimot.user', { name, email, at: Date.now() });
+    completeUnlock(name);
+  });
   $('#su-ack').addEventListener('change', () => {
     $('#su-start').disabled = !$('#su-ack').checked;
   });
@@ -1037,6 +1190,7 @@ function renderProgress() {
     week.push({ key: today(x), label: x.toLocaleDateString('en', { weekday: 'short' }), m: days.get(today(x)) || 0, isToday: i === 0 });
   }
   $('#st-streak').textContent = streak;
+  renderDiary();
   $('#st-week').textContent = Math.round(week.reduce((a, w) => a + w.m, 0));
   $('#st-total').textContent = log.length;
 
@@ -1152,12 +1306,199 @@ function initProgress() {
     $('#cp-result').textContent = 'Reading removed.';
   });
   $('#reset-data').addEventListener('click', () => {
-    if (!confirm('Clear your practice history and breath-hold results on this device?')) return;
-    ['neshimot.log', 'neshimot.cp', 'ruach.log', 'ruach.cp'].forEach((k) => store.del(k));
+    if (!confirm('Clear your practice history, breathing diary and breath-hold results on this device?')) return;
+    ['neshimot.log', 'neshimot.cp', 'neshimot.notes', 'ruach.log', 'ruach.cp'].forEach((k) => store.del(k));
     renderProgress();
     $('#cp-result').textContent = '';
     out.textContent = '0.0';
   });
+}
+
+/* =================================================================
+   Breathing diary — a timeline of sessions, moods and notes.
+   Stored on this device only (sessions in neshimot.log, free notes in neshimot.notes).
+   ================================================================= */
+const FEEL = { calmer: 'Calmer', same: 'About the same', energised: 'Energised' };
+const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const diaryEnabled = () => !(GATE.ready === true && !unlockedUser());
+let diaryShown = 8;
+
+function practiceName(id) {
+  if (!id) return 'General note';
+  if (id.startsWith('ritual:')) {
+    const r = RITUALS.find((x) => `ritual:${x.id}` === id);
+    return r ? `${r.name} ritual` : 'Ritual';
+  }
+  const ex = byId(id);
+  return ex ? ex.name : 'Practice';
+}
+
+function diaryItems() {
+  const items = store.get('neshimot.log', []).map((x, i) => ({
+    key: `s${i}`, kind: 'session', at: x.at || Date.parse(`${x.d}T12:00:00`), timed: !!x.at, id: x.id, m: x.m, feel: x.feel, note: x.note || '',
+  }));
+  store.get('neshimot.notes', []).forEach((n, i) => items.push({ key: `n${i}`, kind: 'note', at: n.at, timed: true, id: n.id, note: n.text || '' }));
+  return items.sort((a, b) => b.at - a.at);
+}
+
+function itemHTML(it) {
+  const when = new Date(it.at);
+  const date = when.toLocaleDateString('en', { weekday: 'short', day: 'numeric', month: 'short' });
+  const time = it.timed ? ` · ${when.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}` : '';
+  const what = it.kind === 'session' ? `${esc(practiceName(it.id))} · ${it.m < 1 ? '<1' : Math.round(it.m)} min` : esc(practiceName(it.id));
+  const feel = it.feel ? `<span class="feel feel-${it.feel}">${FEEL[it.feel]}</span>` : '';
+  const text = it.note ? `<p class="diary-text">${esc(it.note)}</p>` : '';
+  const actions = it.note
+    ? `<button type="button" class="link-btn" data-edit="${it.key}">Edit</button><button type="button" class="link-btn" data-del="${it.key}">Delete</button>`
+    : `<button type="button" class="link-btn" data-edit="${it.key}">Add a note</button>`;
+  return `<li class="diary-item is-${it.kind}${it.note ? ' has-note' : ''}" data-key="${it.key}">
+    <div class="diary-meta"><time datetime="${when.toISOString()}">${date}${time}</time><span class="diary-what">${what}</span>${feel}</div>
+    ${text}<div class="diary-item-actions">${actions}</div></li>`;
+}
+
+function renderDiary() {
+  const box = $('#diary');
+  if (!box) return;
+  const on = diaryEnabled();
+  $('#diary-locked').hidden = on;
+  $('#diary-new').hidden = !on;
+  $('#diary-export').hidden = !on;
+  if (!on) {
+    $('#diary-compose').hidden = true;
+    $('#diary-list').innerHTML = '';
+    $('#diary-moods').hidden = true;
+    $('#diary-empty').hidden = true;
+    $('#diary-more').hidden = true;
+    return;
+  }
+  const items = diaryItems();
+  // how sessions leave you — from the one-tap mood on the completion screen
+  const counts = { calmer: 0, same: 0, energised: 0 };
+  items.forEach((it) => it.feel && counts[it.feel]++);
+  const rated = counts.calmer + counts.same + counts.energised;
+  const moods = $('#diary-moods');
+  moods.hidden = rated < 1;
+  if (rated) {
+    moods.innerHTML =
+      `<p class="diary-moods-title">How your sessions leave you</p><div class="mood-bar" role="img" aria-label="${Object.entries(counts).map(([k, v]) => `${FEEL[k]} ${v}`).join(', ')}">` +
+      Object.entries(counts).filter(([, v]) => v).map(([k, v]) => `<i class="feel-${k}" style="flex:${v}"></i>`).join('') +
+      `</div><p class="mood-legend">${Object.entries(counts).filter(([, v]) => v).map(([k, v]) => `<span class="feel feel-${k}">${FEEL[k]} · ${Math.round((v / rated) * 100)}%</span>`).join('')}</p>`;
+  }
+  $('#diary-list').innerHTML = items.slice(0, diaryShown).map(itemHTML).join('');
+  $('#diary-empty').hidden = items.length > 0;
+  $('#diary-more').hidden = items.length <= diaryShown;
+}
+
+function saveDiaryText(key, text) {
+  const i = +key.slice(1);
+  if (key[0] === 's') {
+    const log = store.get('neshimot.log', []);
+    if (!log[i]) return;
+    if (text) log[i].note = text;
+    else delete log[i].note;
+    store.set('neshimot.log', log);
+  } else {
+    const notes = store.get('neshimot.notes', []);
+    if (!notes[i]) return;
+    if (text) notes[i].text = text;
+    else notes.splice(i, 1);
+    store.set('neshimot.notes', notes);
+  }
+}
+
+function exportDiary() {
+  const items = diaryItems().reverse();
+  const lines = ['Neshimot — Breathing diary', `Downloaded ${new Date().toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' })}`, ''];
+  for (const it of items) {
+    const when = new Date(it.at);
+    const head = [
+      when.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' }) + (it.timed ? `, ${when.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}` : ''),
+      practiceName(it.id),
+      it.kind === 'session' ? `${it.m < 1 ? '<1' : Math.round(it.m)} min` : '',
+      it.feel ? FEEL[it.feel] : '',
+    ].filter(Boolean);
+    lines.push(head.join(' · '));
+    if (it.note) lines.push(it.note);
+    lines.push('');
+  }
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `neshimot-diary-${today()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 1000);
+}
+
+function initDiary() {
+  const sel = $('#dc-practice');
+  sel.innerHTML = `<option value="">General note</option>` + EXERCISES.map((e) => `<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  $('#diary-new').addEventListener('click', () => {
+    const f = $('#diary-compose');
+    f.hidden = false;
+    $('#dc-text').focus();
+  });
+  $('#dc-cancel').addEventListener('click', () => {
+    $('#diary-compose').hidden = true;
+    $('#dc-text').value = '';
+  });
+  $('#diary-compose').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = $('#dc-text').value.trim();
+    if (!text) return $('#dc-text').focus();
+    const notes = store.get('neshimot.notes', []);
+    notes.push({ at: Date.now(), d: today(), id: sel.value || null, text });
+    store.set('neshimot.notes', notes);
+    $('#dc-text').value = '';
+    $('#diary-compose').hidden = true;
+    renderDiary();
+  });
+  $('#diary-more').addEventListener('click', () => {
+    diaryShown += 12;
+    renderDiary();
+  });
+  $('#diary-export').addEventListener('click', exportDiary);
+  $('#diary-unlock').addEventListener('click', () => {
+    P.next = null;
+    openGate(() => {
+      closePractice();
+      P.pendingScroll = '#diary';
+    });
+  });
+  // inline edit / delete
+  $('#diary-list').addEventListener('click', (e) => {
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      if (!confirm('Delete this note?')) return;
+      saveDiaryText(del.dataset.del, '');
+      return renderDiary();
+    }
+    const edit = e.target.closest('[data-edit]');
+    if (edit) {
+      const key = edit.dataset.edit;
+      const li = edit.closest('.diary-item');
+      const current = diaryItems().find((x) => x.key === key);
+      const form = document.createElement('form');
+      form.className = 'diary-edit';
+      form.innerHTML = `<label class="sr-only" for="de-${key}">Note</label><textarea id="de-${key}" rows="3" maxlength="2000" placeholder="What did you notice?"></textarea>
+        <div class="diary-row-actions"><button class="btn btn-primary" type="submit">Save</button><button class="link-btn" type="button" data-cancel>Cancel</button></div>`;
+      li.querySelector('.diary-text')?.remove();
+      li.querySelector('.diary-item-actions').replaceWith(form);
+      const ta = form.querySelector('textarea');
+      ta.value = (current && current.note) || '';
+      ta.focus();
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        saveDiaryText(key, ta.value.trim());
+        renderDiary();
+      });
+      form.querySelector('[data-cancel]').addEventListener('click', renderDiary);
+    }
+  });
+  renderDiary();
 }
 
 /* =================================================================
@@ -1254,6 +1595,11 @@ initPractice();
 initLab();
 initProgress();
 initFigures();
+initDiary();
+checkGate().then(() => {
+  flushPendingLead();
+  renderDiary();
+});
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
