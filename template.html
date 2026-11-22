@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <script>document.documentElement.classList.add('js')</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Ruach — Daily Breathing Practice</title>
+  <meta name="description" content="<!--@count--> guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
+  <meta name="theme-color" content="#110E1A" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ruach — Daily Breathing Practice" />
+  <meta property="og:description" content="Guided breathing exercises with a living breath timer and gentle sound." />
+  <meta property="og:image" content="/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D8%B1%D9%8F%D9%88%D8%AD%D7%A8%D7%95%D6%BC%D7%97%D6%B7&display=swap" />
+  <link rel="stylesheet" href="/css/styles.css?v=<!--@version-->" />
+</head>
+<body>
+  <a class="skip" href="#practices">Skip to the practices</a>
+
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="Ruach — home"><!--@star--><span>Ruach</span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#practices">Practices</a>
+      <a href="#ritual">Daily ritual</a>
+      <a href="#science">Science</a>
+      <a href="#progress">Your practice</a>
+      <a href="#safety">Safety</a>
+    </nav>
+    <button class="nav-cta" type="button" data-begin="coherent">Breathe now</button>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="sky" aria-hidden="true">
+        <div class="stars" id="stars"></div>
+        <div class="shooting"></div>
+        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z" fill="#F4E6C8"/></svg>
+      </div>
+      <div class="sun" aria-hidden="true"><div class="sun-glow"></div><div class="sun-disc"></div></div>
+      <svg class="dunes" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A4B52"/><stop offset="1" stop-color="#5A3044"/></linearGradient>
+          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E3245"/><stop offset="1" stop-color="#3A2337"/></linearGradient>
+          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2336"/><stop offset="1" stop-color="#231A2C"/></linearGradient>
+          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E1726"/><stop offset="1" stop-color="#110E1A"/></linearGradient>
+          <linearGradient id="ridge" x1="0" x2="1"><stop offset="0" stop-color="#EBC07E" stop-opacity="0"/><stop offset=".45" stop-color="#EBC07E" stop-opacity=".55"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></linearGradient>
+        </defs>
+        <g class="dune" data-depth="0.08"><path d="M0,560 C180,500 320,470 520,500 C700,527 820,470 1000,455 C1180,440 1320,490 1440,470 L1440,800 L0,800Z" fill="url(#d1)"/><path d="M380,486 C460,480 500,490 560,503 C700,527 820,470 1000,455" fill="none" stroke="url(#ridge)" stroke-width="1.5"/></g>
+        <g class="dune" data-depth="0.16"><path d="M0,625 C200,565 380,605 560,590 C760,573 860,525 1060,545 C1240,563 1340,605 1440,585 L1440,800 L0,800Z" fill="url(#d2)"/><path d="M700,575 C800,560 880,525 1060,545 C1160,555 1240,570 1300,585" fill="none" stroke="url(#ridge)" stroke-width="1.2" opacity=".7"/></g>
+        <g class="dune" data-depth="0.26"><path d="M0,700 C220,648 420,668 620,656 C820,644 980,604 1180,634 C1300,652 1380,672 1440,662 L1440,800 L0,800Z" fill="url(#d3)"/><path d="M60,682 C200,650 380,664 560,660" fill="none" stroke="url(#ridge)" stroke-width="1" opacity=".55"/></g>
+        <g class="dune" data-depth="0.38"><path d="M0,768 C260,728 520,752 760,742 C1000,732 1200,706 1440,726 L1440,800 L0,800Z" fill="url(#d4)"/></g>
+      </svg>
+      <div class="hero-inner">
+        <p class="eyebrow hero-eyebrow">Daily breath practice</p>
+        <h1 id="hero-title" class="hero-title">Ruach</h1>
+        <p class="hero-scripts" aria-label="Ruach in Hebrew and Rūḥ in Arabic"><span lang="he" dir="rtl">רוּחַ</span><i></i><span lang="ar" dir="rtl">رُوح</span></p>
+        <p class="hero-sub">In Hebrew and Arabic one word means both <em>breath</em> and <em>spirit</em>. <!--@countword--> guided practices, a living breath timer and the stillness of the desert — a few quiet minutes, every day.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#practices">Explore the practices</a>
+          <button class="btn btn-ghost" type="button" data-begin="physiological-sigh" data-minutes="1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>1-minute reset
+          </button>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#how" aria-label="Scroll down"><span></span></a>
+    </section>
+
+    <!-- ============ HOW ============ -->
+    <section class="how" id="how" aria-label="How it works">
+      <div class="wrap how-grid">
+        <div class="how-item reveal"><span class="how-n">i</span><h2>Choose</h2><p>Pick a practice for what you need right now — to ground, to balance, to calm or to energise.</p></div>
+        <div class="how-item reveal"><span class="how-n">ii</span><h2>Follow the sun</h2><p>Press <em>Begin</em>. The sun swells as you inhale, rests while you hold and sets as you exhale. Soft tones lead the way, so your eyes can close.</p></div>
+        <div class="how-item reveal"><span class="how-n">iii</span><h2>Return daily</h2><p>Five minutes every day changes more than an hour once a week. Your streak is kept privately on this device.</p></div>
+      </div>
+    </section>
+
+    <!-- ============ PRACTICES ============ -->
+    <section class="section practices pattern-bg" id="practices" aria-labelledby="practices-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">The practices</p>
+          <h2 id="practices-title" class="section-title"><!--@countword--> breaths for every day</h2>
+          <p class="section-lede">Each practice has a purpose. Read the technique, look at its rhythm, then press <em>Begin</em> — the timer guides every inhale, hold and exhale with light and sound.</p>
+        </header>
+        <div class="filters reveal" role="group" aria-label="Filter by purpose"><!--@filters--></div>
+        <div class="cards" id="cards"><!--@cards--></div>
+      </div>
+    </section>
+
+    <!-- ============ CHAPTERS ============ -->
+    <section class="chapters" aria-label="Practice guides">
+      <div class="wrap"><!--@chapters--></div>
+    </section>
+
+    <!-- ============ RITUAL ============ -->
+    <section class="section ritual-sec pattern-bg" id="ritual" aria-labelledby="ritual-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Daily ritual</p>
+          <h2 id="ritual-title" class="section-title">Three moments, one day</h2>
+          <p class="section-lede">If you practise once, choose the moment you need most. To build a lasting habit, follow the sun — each ritual plays its practices back to back.</p>
+        </header>
+        <div class="rituals"><!--@rituals--></div>
+      </div>
+    </section>
+
+    <!-- ============ SCIENCE ============ -->
+    <section class="section science" id="science" aria-labelledby="science-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Why it works</p>
+          <h2 id="science-title" class="section-title">The science of a slower breath</h2>
+          <p class="section-lede">Every breath nudges your heart. Slow the breath and the nudges grow into waves — move the slider and watch heart and breath fall into resonance.</p>
+        </header>
+        <div class="lab reveal">
+          <div class="lab-main">
+            <div class="lab-legend"><span><i class="sw sw-in"></i>Breath</span><span><i class="sw sw-hr"></i>Heart rate</span></div>
+            <svg class="lab-chart" id="rsa" viewBox="0 0 640 240" role="img" aria-label="Animated chart of breath and heart rate"></svg>
+            <div class="lab-control">
+              <label for="bpm">Breaths per minute</label>
+              <input type="range" id="bpm" min="3" max="20" step="0.5" value="12" />
+              <output id="bpm-out" for="bpm">12</output>
+            </div>
+          </div>
+          <aside class="lab-side">
+            <p class="lab-stat"><span id="hr-swing">±3</span><small>bpm heart-rate swing</small></p>
+            <svg class="lab-curve" id="curve" viewBox="0 0 260 150" role="img" aria-label="Resonance curve peaking near six breaths per minute"></svg>
+            <p class="lab-note" id="lab-note">A typical resting rate. The heart barely responds to each breath.</p>
+            <p class="lab-fine">Illustrative model of respiratory sinus arrhythmia, after resonance-frequency research (Lehrer &amp; Gevirtz, 2014).</p>
+          </aside>
+        </div>
+        <div class="principles"><!--@principles--></div>
+      </div>
+    </section>
+
+    <!-- ============ PROGRESS ============ -->
+    <section class="section progress pattern-bg" id="progress" aria-labelledby="progress-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Your practice</p>
+          <h2 id="progress-title" class="section-title">Small breaths, every day</h2>
+          <p class="section-lede">Sessions of a minute or more are recorded automatically. Everything stays on this device.</p>
+        </header>
+        <div class="stats reveal">
+          <div class="stat"><span class="stat-v" id="st-streak">0</span><span class="stat-l">day streak</span></div>
+          <div class="stat"><span class="stat-v" id="st-week">0</span><span class="stat-l">minutes this week</span></div>
+          <div class="stat"><span class="stat-v" id="st-total">0</span><span class="stat-l">sessions in total</span></div>
+        </div>
+        <div class="progress-grid">
+          <div class="panel reveal">
+            <h3 class="panel-title">The last seven days</h3>
+            <svg class="week-chart" id="week" viewBox="0 0 420 180" role="img" aria-label="Minutes practised on each of the last seven days"></svg>
+          </div>
+          <div class="panel reveal cp" id="cp">
+            <div class="cp-head">
+              <span class="cp-icon"><!--@hourglass--></span>
+              <div><h3 class="panel-title">Breath-hold check</h3><p class="panel-sub">The “control pause” — a simple gauge of breathing efficiency used in Buteyko-based training.</p></div>
+            </div>
+            <ol class="cp-steps">
+              <li>Sit quietly and breathe normally through the nose for a minute.</li>
+              <li>After a <em>normal</em> exhale, pinch your nose and press <strong>Start</strong>.</li>
+              <li>Press <strong>Stop</strong> at the first clear urge to breathe — not your maximum. Your next breath should be calm.</li>
+            </ol>
+            <div class="cp-timer">
+              <span class="cp-time" id="cp-time" aria-live="off">0.0</span><span class="cp-unit">s</span>
+              <button class="btn btn-primary" type="button" id="cp-btn">Start</button>
+            </div>
+            <p class="cp-result" id="cp-result" aria-live="polite"></p>
+            <svg class="cp-chart" id="cp-chart" viewBox="0 0 420 150" role="img" aria-label="Your breath-hold results over time"></svg>
+            <p class="lab-fine">Reference ranges from Buteyko practice: under 10s — strained · 10–20s — room to grow · 20–40s — good · 40s+ — excellent. A training gauge, not a medical test.</p>
+          </div>
+        </div>
+        <p class="reset-row"><button class="link-btn" type="button" id="reset-data">Clear my practice history</button></p>
+      </div>
+    </section>
+
+    <!-- ============ SAFETY ============ -->
+    <section class="section safety" id="safety" aria-labelledby="safety-title">
+      <div class="wrap safety-grid">
+        <header class="section-head reveal">
+          <p class="eyebrow">Practise wisely</p>
+          <h2 id="safety-title" class="section-title">Gentle first</h2>
+          <p class="section-lede">Breath is powerful medicine. Respect your limits — the right amount always feels good.</p>
+        </header>
+        <ul class="safety-list"><!--@safety--></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="#top"><!--@star--><span>Ruach</span></a>
+      <p class="footer-line">Breathe in. Breathe out. Return tomorrow.</p>
+      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser.</p>
+    </div>
+  </footer>
+
+  <!-- ============ PRACTICE OVERLAY ============ -->
+  <div class="practice" id="practice" role="dialog" aria-modal="true" aria-labelledby="pr-title" hidden data-phase="prep" data-view="setup">
+    <div class="pr-sky" aria-hidden="true"><div class="stars" id="pr-stars"></div></div>
+    <canvas class="pr-sand" id="sand" aria-hidden="true"></canvas>
+    <svg class="pr-dunes" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <path d="M0,150 C200,100 380,130 560,118 C760,104 880,70 1080,88 C1240,102 1340,130 1440,118 L1440,300 L0,300Z" fill="#2A1D30" opacity=".85"/>
+      <path d="M0,215 C240,178 460,200 700,190 C940,180 1180,160 1440,182 L1440,300 L0,300Z" fill="#1A1422"/>
+      <path d="M0,265 C300,240 620,258 900,250 C1140,243 1300,232 1440,240 L1440,300 L0,300Z" fill="#110E1A"/>
+    </svg>
+
+    <header class="pr-top">
+      <div class="pr-titles">
+        <p class="eyebrow" id="pr-item">Practice</p>
+        <h2 id="pr-title" class="pr-title">Breathe</h2>
+      </div>
+      <button class="icon-btn" type="button" id="pr-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <!-- setup -->
+    <section class="pr-setup" id="pr-setup" aria-label="Session settings">
+      <div class="setup-card">
+        <p class="setup-pattern" id="su-pattern"></p>
+        <div class="setup-plan" id="su-plan"></div>
+        <div class="setup-row" id="su-dose-row">
+          <span class="setup-label" id="su-dose-label">Duration</span>
+          <div class="seg" id="su-dose" role="radiogroup" aria-labelledby="su-dose-label"></div>
+        </div>
+        <div class="setup-row">
+          <label class="setup-label" for="su-pace">Pace</label>
+          <div class="pace">
+            <span>Faster</span>
+            <input type="range" id="su-pace" min="0.75" max="1.5" step="0.05" value="1" />
+            <span>Slower</span>
+          </div>
+        </div>
+        <p class="setup-calc" id="su-calc"></p>
+        <div class="toggles">
+          <button class="toggle" type="button" data-pref="sound" aria-pressed="true"><span class="tg"></span>Breath tones</button>
+          <button class="toggle" type="button" data-pref="wind" aria-pressed="false"><span class="tg"></span>Desert wind</button>
+          <button class="toggle" type="button" data-pref="voice" aria-pressed="false"><span class="tg"></span>Voice cues</button>
+          <button class="toggle" type="button" data-pref="haptic" aria-pressed="true" id="tg-haptic"><span class="tg"></span>Vibration</button>
+        </div>
+        <div class="setup-actions">
+          <button class="btn btn-primary btn-lg" type="button" id="su-start">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>Start
+          </button>
+          <button class="link-btn" type="button" id="su-preview">Hear the tones</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- stage -->
+    <section class="pr-stage" id="pr-stage" aria-label="Breath guide">
+      <div class="orb" id="orb">
+        <div class="orb-halo"></div>
+        <svg class="orb-art" viewBox="-100 -100 200 200" aria-hidden="true">
+          <defs>
+            <radialGradient id="core"><stop class="core-a" offset="0"/><stop class="core-b" offset=".72"/><stop class="core-c" offset=".93"/><stop class="core-d" offset="1"/></radialGradient>
+          </defs>
+          <g class="orb-outer"><g class="orb-outer-spin"><circle class="ph-stroke" r="96" fill="none" stroke-opacity=".3" stroke-width=".6" stroke-dasharray="1 5"/></g></g>
+          <g class="orb-petals" id="petals"></g>
+          <g class="orb-star"><g class="orb-star-spin">
+            <rect class="ph-stroke" x="-52" y="-52" width="104" height="104" fill="none" stroke-opacity=".5" stroke-width=".7"/>
+            <rect class="ph-stroke" x="-52" y="-52" width="104" height="104" fill="none" stroke-opacity=".5" stroke-width=".7" transform="rotate(45)"/>
+          </g></g>
+          <g class="orb-core"><circle r="44" fill="url(#core)"/><circle class="ph-stroke" r="44" fill="none" stroke-opacity=".55" stroke-width=".6"/></g>
+        </svg>
+        <svg class="orb-ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring-track" cx="50" cy="50" r="49"/>
+          <circle class="ring-prog" id="ring" cx="50" cy="50" r="49"/>
+        </svg>
+        <div class="orb-text">
+          <p class="cue" id="cue">Get ready</p>
+          <p class="count" id="count"></p>
+        </div>
+      </div>
+      <p class="hint" id="hint"></p>
+      <div class="nostrils" id="nostrils" hidden aria-hidden="true">
+        <span data-side="left">Left</span><span class="ns-bridge"></span><span data-side="right">Right</span>
+      </div>
+      <p class="pr-round" id="round"></p>
+    </section>
+
+    <!-- done -->
+    <section class="pr-done" id="pr-done" aria-label="Session complete">
+      <div class="done-mark"><!--@star--></div>
+      <h3 class="done-title">Well breathed.</h3>
+      <p class="done-sub" id="done-sub"></p>
+      <p class="done-note">Sit for a few more breaths and notice how you feel.</p>
+      <div class="setup-actions">
+        <button class="btn btn-primary" type="button" id="done-close">Return</button>
+        <button class="link-btn" type="button" id="done-again">Practise again</button>
+      </div>
+    </section>
+
+    <footer class="pr-bar" id="pr-bar">
+      <div class="pr-progress" aria-hidden="true"><div class="pr-progress-fill" id="prog"></div></div>
+      <div class="pr-controls">
+        <span class="pr-time" id="t-el">0:00</span>
+        <button class="icon-btn" type="button" id="btn-sound" aria-label="Mute tones" aria-pressed="false">
+          <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="play" type="button" id="btn-play" aria-label="Pause">
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.6v13H8zM13.4 5.5H16v13h-2.6z" fill="currentColor"/></svg>
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-restart" aria-label="Restart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 107-7H8.5M8.5 5V1.8M8.5 5l3 2.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="pr-time pr-time-r" id="t-rem">0:00</span>
+      </div>
+    </footer>
+    <div class="sr-only" aria-live="polite" id="pr-live"></div>
+  </div>
+
+  <script type="module" src="/js/app.js?v=<!--@version-->"></script>
+</body>
+</html>
