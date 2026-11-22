@@ -8,10 +8,18 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const pad2 = (n) => String(n).padStart(2, '0');
-const clock = (s) => {
-  s = Math.max(0, Math.round(s));
-  return `${Math.floor(s / 60)}:${pad2(s % 60)}`;
+const mmss = (s) => `${Math.floor(s / 60)}:${pad2(s % 60)}`;
+const clock = (s) => mmss(Math.max(0, Math.round(s)));
+// elapsed counts down from the same timestamp as remaining, so neither ever skips a second
+const clockUp = (s) => mmss(Math.max(0, Math.floor(s + 1e-6)));
+const clockDown = (s) => mmss(Math.max(0, Math.ceil(s - 1e-6)));
+const fmt1 = (n) => String(Math.round(n * 10) / 10);
+const fmtDur = (secs) => {
+  const m = Math.floor(secs / 60);
+  const r = Math.round(secs % 60);
+  return m ? `${m} min${r ? ` ${r} s` : ''}` : `${r} s`;
 };
+const plural = (w, n) => (n === 1 ? w : w.endsWith('x') ? `${w}es` : `${w}s`);
 
 /* ---------------- storage (per-device conveniences) ---------------- */
 const store = {
@@ -244,7 +252,7 @@ function pickVoice() {
 if ('speechSynthesis' in window) speechSynthesis.addEventListener?.('voiceschanged', () => (voicePick = null));
 
 function speak(text) {
-  if (!prefs.voice || !('speechSynthesis' in window)) return;
+  if (!prefs.voice || P.muted || !('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text.replace(/·/g, ','));
@@ -284,7 +292,7 @@ function releaseScreen() {
    Practice overlay
    ================================================================= */
 const audio = new BreathAudio();
-audio.muted = !prefs.sound;
+audio.tonesOn = prefs.sound;
 audio.windOn = prefs.wind;
 
 const P = {
@@ -299,17 +307,25 @@ const P = {
   lastFocus: null,
   lastCount: '',
   lastSec: -1,
+  muted: false, // the player's master mute: tones, wind and voice
+  lastLogIndex: null,
+  pendingEnd: null,
+  pendingScroll: null,
 };
 
 let session;
 let sand;
 const RING_C = 2 * Math.PI * 49;
 
-function setPose(ex) {
+function setPose(ex, side = '') {
   const fig = $('#fig');
+  if (!fig) return;
   const pose = (ex && ex.pose) || 'rest';
-  if (fig && fig.dataset.pose !== pose) fig.dataset.pose = pose;
+  if (fig.dataset.pose !== pose) fig.dataset.pose = pose;
+  if ((fig.dataset.side || '') !== side) fig.dataset.side = side;
 }
+
+const acks = () => store.get('neshimot.ack', {});
 
 function currentPlan() {
   if (P.kind === 'ritual') {
@@ -360,11 +376,36 @@ function renderSetup() {
     const cyc = cycleSeconds(ex, pace);
     const hasPumps = ex.pattern.some((p) => p.repeat);
     const rounds = roundsFor(ex, plan[0], pace);
-    calc = hasPumps
-      ? `${rounds} rounds · about ${Math.round(cyc)} s each · <b>${clock(total)}</b> total`
-      : `${(Math.round(cyc * 10) / 10).toString()} s per ${ex.roundLabel.toLowerCase()} · ${(60 / cyc).toFixed(1)} breaths/min · <b>${clock(total)}</b> total`;
-  } else calc = `Pace ${Math.round((1 / pace) * 100)}% · <b>${clock(total)}</b> total`;
+    const unit = plural(ex.roundLabel.toLowerCase(), rounds);
+    const breakdown = `${rounds} ${unit} (${clock(rounds * cyc)})${ex.outro ? ` + ${ex.outro.s} s rest` : ''} + 4 s to settle in`;
+    const rhythm = hasPumps ? `about ${Math.round(cyc)} s per round` : `${fmt1(cyc)} s per ${ex.roundLabel.toLowerCase()} · ${(60 / cyc).toFixed(1)} breaths/min`;
+    calc = `${breakdown} · <b>${clock(total)}</b> total<br><span>${rhythm}</span>`;
+  } else calc = `${plan.length} practices with short pauses between · <b>${clock(total)}</b> total`;
   $('#su-calc').innerHTML = calc;
+
+  // dosing guidance under the picker
+  const note = P.kind === 'exercise' ? P.ex.doseNote : '';
+  $('#su-note').textContent = note || '';
+  $('#su-note').hidden = !note;
+
+  // safety: a one-line caution before every practice that has one, and a one-time
+  // acknowledgement before the intermediate/advanced activating practices
+  let caution = '';
+  let link = '#safety';
+  let needsAck = false;
+  if (P.kind === 'exercise') {
+    caution = P.ex.cautionShort || '';
+    link = `#ex-${P.ex.id}`;
+    needsAck = !!P.ex.ack && !acks()[P.ex.id];
+  } else if (plan.some((it) => it.exercise.pattern.some((ph) => ph.t === 'hold'))) {
+    caution = 'Includes breath holds. If you are pregnant or have high blood pressure, keep breathing gently instead of holding.';
+  }
+  $('#su-caution').hidden = !caution;
+  $('#su-caution-text').textContent = caution;
+  $('#su-caution-link').setAttribute('href', link);
+  $('#su-ack-row').hidden = !needsAck;
+  if (!needsAck) $('#su-ack').checked = false;
+  $('#su-start').disabled = needsAck && !$('#su-ack').checked;
   $$('.toggle[data-pref]').forEach((t) => t.setAttribute('aria-pressed', !!prefs[t.dataset.pref]));
   $('#tg-haptic').hidden = !canVibrate;
   $('#su-preview').hidden = !audio.supported;
@@ -394,6 +435,8 @@ function openPractice({ exId, ritualId, minutes }) {
     $('#pr-item').textContent = `${P.ex.category} · ${P.ex.level}`;
     $('#pr-title').textContent = P.ex.name;
   }
+  P.muted = false;
+  $('#su-ack').checked = false;
   renderSetup();
   setView('setup');
   setPose(P.ex);
@@ -421,6 +464,8 @@ function openPractice({ exId, ritualId, minutes }) {
 }
 
 function teardown() {
+  stopPreview();
+  hideConfirm();
   if (session && (session.state === 'running' || session.state === 'paused')) logProgress(session.elapsed());
   session?.stop(true);
   releaseScreen();
@@ -448,30 +493,97 @@ function closePractice() {
 }
 
 function startSession() {
-  const unlocking = audio.unlock(); // inside the gesture
-  audio.setMuted(!prefs.sound);
+  stopPreview();
+  audio.unlock(); // must run inside the gesture; the timer doesn't wait for the audio device
+  audio.setTonesOn(prefs.sound);
+  audio.setMuted(P.muted);
   if (audio.ctx) audio.setWind(prefs.wind);
-  speak('Get ready');
   const plan = currentPlan();
   P.plan = plan;
+  if (P.kind === 'exercise' && P.ex.ack) {
+    const a = acks();
+    a[P.ex.id] = true;
+    store.set('neshimot.ack', a);
+  }
+  speak(plan[0].exercise.prep ? plan[0].exercise.prep.cue : 'Get ready');
   session.load(plan, { pace: P.pace, prep: 4 });
   session._logged = false;
   P.lastCount = '';
   P.lastSec = -1;
+  P.lastLogIndex = null;
+  renderTicks();
   setView('stage');
   sand.setCenter($('#orb'));
   syncSoundBtn();
-  unlocking.then(() => {
-    if (P.el.dataset.view !== 'stage' || session.state !== 'ready') return;
-    session.start();
-    holdScreen();
-  });
+  session.start();
+  holdScreen();
+}
+
+/** Ritual progress bar: a small gap where each new practice begins. */
+function renderTicks() {
+  const box = $('#pr-ticks');
+  box.innerHTML = session.tl
+    .filter((ph) => ph.t === 'interlude')
+    .map((ph) => `<i style="left:${((ph.start / session.total) * 100).toFixed(2)}%"></i>`)
+    .join('');
 }
 
 function syncSoundBtn() {
   const b = $('#btn-sound');
-  b.setAttribute('aria-pressed', String(!prefs.sound));
-  b.setAttribute('aria-label', prefs.sound ? 'Mute tones' : 'Unmute tones');
+  b.setAttribute('aria-pressed', String(P.muted));
+  b.setAttribute('aria-label', P.muted ? 'Unmute sound' : 'Mute sound');
+}
+
+/* ---------- ending a session: confirm once there is something to lose ---------- */
+function requestEnd(kind) {
+  const active = session && (session.state === 'running' || session.state === 'paused');
+  if (!active || practicedSeconds(session.elapsed()) < 30) return doEnd(kind);
+  const wasRunning = session.state === 'running';
+  if (wasRunning) session.pause();
+  const secs = practicedSeconds(session.elapsed());
+  $('#cf-title').textContent = kind === 'restart' ? 'Start over?' : 'End this session?';
+  $('#cf-text').textContent = `You've practised ${fmtDur(secs)}. ${secs >= 60 ? 'It will be saved to your progress.' : 'Sessions under a minute aren’t saved.'}`;
+  $('#cf-ok').textContent = kind === 'restart' ? 'Start over' : 'End session';
+  P.pendingEnd = { kind, wasRunning };
+  $('#pr-confirm').hidden = false;
+  setTimeout(() => $('#cf-cancel').focus({ preventScroll: true }), 30);
+}
+
+function hideConfirm() {
+  $('#pr-confirm').hidden = true;
+}
+
+function doEnd(kind) {
+  if (kind === 'restart') {
+    if (session.state === 'running' || session.state === 'paused') logProgress(session.elapsed());
+    startSession();
+  } else closePractice();
+}
+
+function cancelEnd() {
+  const pend = P.pendingEnd;
+  P.pendingEnd = null;
+  hideConfirm();
+  if (pend && pend.wasRunning && session.state === 'paused') {
+    audio.unlock();
+    session.resume();
+    holdScreen();
+  }
+  $('#btn-play').focus({ preventScroll: true });
+}
+
+/* ---------- tone preview with visible state (B11) ---------- */
+let previewTimer = 0;
+function stopPreview() {
+  clearTimeout(previewTimer);
+  const b = $('#su-preview');
+  if (!b || !b.dataset.playing) return;
+  delete b.dataset.playing;
+  audio.stopAll(0.3);
+  audio.setMuted(P.muted);
+  audio.setTonesOn(prefs.sound);
+  b.textContent = 'Hear the tones';
+  b.setAttribute('aria-pressed', 'false');
 }
 
 function practicedSeconds(e) {
@@ -489,15 +601,23 @@ function onPhase(ph) {
   const item = P.plan[ph.item];
   const ex = item?.exercise;
   el.dataset.phase = ph.counter ? 'pump' : ph.t;
-  setPose(ex);
+  setPose(ex, ph.side || '');
   sand.phase = ph.counter ? 'pump' : ph.t;
 
   const cue = $('#cue');
   if (cue.textContent !== ph.cue) {
     cue.textContent = ph.cue;
+    cue.style.animationDuration = ph.s < 3 ? '0.28s' : ''; // short phases get a quicker fade
     cue.classList.remove('swap');
     void cue.offsetWidth;
     cue.classList.add('swap');
+  }
+  if (!ph.counter) {
+    // a soft flash of the sun on every phase change — visible even when sound can't be heard
+    const orb = $('#orb');
+    orb.classList.remove('pulse');
+    void orb.offsetWidth;
+    orb.classList.add('pulse');
   }
   const hint = ph.t === 'interlude' ? `${ex.name} · ${ex.patternLabel}` : ph.hint || '';
   if ($('#hint').textContent !== hint) $('#hint').textContent = hint;
@@ -518,12 +638,14 @@ function onPhase(ph) {
   ns.hidden = !usesSides || ph.t === 'prep' || ph.t === 'interlude';
   if (usesSides) $$('[data-side]', ns).forEach((s) => s.classList.toggle('is-on', s.dataset.side === ph.side));
 
-  // voice, haptics, screen reader (skip the rapid pumps)
+  // voice, haptics, screen reader (skip the rapid pumps; very short phases get the chime, not speech)
   const firstPump = ph.counter && ph.count === 1 && ph.t === 'out';
   if (!ph.counter || firstPump) {
-    if (ph.t !== 'prep') speak(firstPump ? `${ph.countTotal} pumps` : ph.cue);
+    const words = ph.say || ph.cue;
+    if (firstPump) speak(`${ph.countTotal} pumps`);
+    else if (ph.t !== 'prep' && ph.s >= 1.5) speak(words);
     buzz(ph.t === 'in' ? 35 : ph.t === 'out' ? [18, 70, 18] : ph.t === 'hold' ? 12 : 0);
-    $('#pr-live').textContent = firstPump ? `${ph.countTotal} pumps` : `${ph.cue}${ph.s >= 2 ? `, ${Math.round(ph.s)} seconds` : ''}`;
+    $('#pr-live').textContent = firstPump ? `${ph.countTotal} pumps` : `${words}${ph.s >= 2 ? `, ${fmt1(ph.s)} seconds` : ''}`;
   }
 }
 
@@ -535,7 +657,10 @@ function onFrame(f) {
 
   let count = '';
   if (ph.counter) count = `${ph.count} / ${ph.countTotal}`;
-  else if (ph.s >= 1.5) count = String(Math.max(1, Math.ceil(remaining - 0.02)));
+  else if (ph.s >= 1.5) {
+    // count down from the whole seconds; a fractional part (5.5 s) is absorbed into the first number
+    count = String(Math.max(1, Math.min(Math.floor(ph.s + 1e-6), Math.ceil(remaining - 0.02))));
+  }
   if (count !== P.lastCount) {
     $('#count').textContent = count;
     P.lastCount = count;
@@ -544,8 +669,8 @@ function onFrame(f) {
   const sec = Math.floor(e);
   if (sec !== P.lastSec) {
     P.lastSec = sec;
-    $('#t-el').textContent = clock(e);
-    $('#t-rem').textContent = `−${clock(session.total - e)}`;
+    $('#t-el').textContent = clockUp(e);
+    $('#t-rem').textContent = `−${clockDown(session.total - e)}`;
   }
 }
 
@@ -574,6 +699,11 @@ function onState(s) {
     $('#done-sub').textContent = `${m ? `${m} min ` : ''}${r ? `${r} s ` : ''}of ${what}.`;
     $('#pr-title').textContent = P.kind === 'ritual' ? P.ritual.title : P.ex.name;
     $('#pr-item').textContent = 'Complete';
+    const streak = streakDays();
+    $('#done-streak').textContent = streak > 1 ? `${streak} days in a row — keep the rhythm going.` : streak === 1 ? 'Day one of your streak. See you tomorrow.' : '';
+    $$('#mood [data-mood]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    $('#mood-thanks').hidden = true;
+    $('#pr-live').textContent = 'Session complete. Well breathed.';
     setView('done');
     P.el.dataset.phase = 'in';
     sand.setCenter($('.done-mark'));
@@ -589,10 +719,18 @@ function logProgress(e) {
     session._logged = true;
     const log = store.get('neshimot.log', []);
     log.push({ d: today(), m: Math.round((secs / 60) * 10) / 10, id: P.kind === 'ritual' ? `ritual:${P.ritual.id}` : P.ex.id });
-    store.set('neshimot.log', log.slice(-800));
+    const kept = log.slice(-800);
+    store.set('neshimot.log', kept);
+    P.lastLogIndex = kept.length - 1;
     renderProgress();
   }
   return secs;
+}
+
+function scrollToPending() {
+  const target = P.pendingScroll && document.querySelector(P.pendingScroll);
+  P.pendingScroll = null;
+  if (target) target.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
 }
 
 function initPractice() {
@@ -615,8 +753,38 @@ function initPractice() {
     }
   });
 
-  $('#pr-close').addEventListener('click', closePractice);
+  $('#pr-close').addEventListener('click', () => requestEnd('close'));
   $('#done-close').addEventListener('click', closePractice);
+  $('#cf-ok').addEventListener('click', () => {
+    const pend = P.pendingEnd;
+    P.pendingEnd = null;
+    hideConfirm();
+    if (pend) doEnd(pend.kind);
+  });
+  $('#cf-cancel').addEventListener('click', cancelEnd);
+  $('#su-ack').addEventListener('change', () => {
+    $('#su-start').disabled = !$('#su-ack').checked;
+  });
+  $('#su-caution-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    P.pendingScroll = $('#su-caution-link').getAttribute('href');
+    const wasPushed = P.pushed;
+    closePractice();
+    if (!wasPushed) scrollToPending();
+  });
+  $('#mood').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-mood]');
+    if (!b) return;
+    $$('#mood [data-mood]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    if (P.lastLogIndex != null) {
+      const log = store.get('neshimot.log', []);
+      if (log[P.lastLogIndex]) {
+        log[P.lastLogIndex].feel = b.dataset.mood;
+        store.set('neshimot.log', log);
+      }
+    }
+    $('#mood-thanks').hidden = false;
+  });
   $('#done-again').addEventListener('click', () => {
     renderSetup();
     setView('setup');
@@ -631,10 +799,17 @@ function initPractice() {
   });
   $('#su-start').addEventListener('click', startSession);
   $('#su-preview').addEventListener('click', () => {
+    const b = $('#su-preview');
+    if (b.dataset.playing) return stopPreview();
+    b.dataset.playing = '1';
+    b.textContent = 'Playing… tap to stop';
+    b.setAttribute('aria-pressed', 'true');
     audio.unlock().then(() => {
+      if (!b.dataset.playing) return;
       audio.setMuted(false);
+      audio.setTonesOn(true);
       audio.preview();
-      setTimeout(() => audio.setMuted(!prefs.sound), 5600);
+      previewTimer = setTimeout(stopPreview, 5600);
     });
   });
   $('#su-dose').addEventListener('click', (e) => {
@@ -655,7 +830,7 @@ function initPractice() {
       prefs[k] = !prefs[k];
       savePrefs();
       t.setAttribute('aria-pressed', prefs[k]);
-      if (k === 'sound') audio.setMuted(!prefs.sound);
+      if (k === 'sound') audio.setTonesOn(prefs.sound);
       if (k === 'wind') {
         if (prefs.wind) audio.unlock().then(() => audio.setWind(true));
         else audio.setWind(false);
@@ -668,22 +843,22 @@ function initPractice() {
   $('#btn-play').addEventListener('click', () => {
     if (session.state === 'running') session.pause();
     else if (session.state === 'paused') {
-      const u = audio.unlock();
-      u.then(() => {
-        session.resume();
-        holdScreen();
-      });
+      audio.unlock(); // resume immediately, exactly where it paused
+      session.resume();
+      holdScreen();
     }
   });
-  $('#btn-restart').addEventListener('click', () => {
-    if (session.state === 'running' || session.state === 'paused') logProgress(session.elapsed());
-    startSession();
-  });
+  $('#btn-restart').addEventListener('click', () => requestEnd('restart'));
+  // master mute: tones, wind and voice together; preferences stay as they are
   $('#btn-sound').addEventListener('click', () => {
-    prefs.sound = !prefs.sound;
-    savePrefs();
-    audio.setMuted(!prefs.sound);
-    if (!prefs.sound) audio.stopAll(0.2);
+    P.muted = !P.muted;
+    audio.setMuted(P.muted);
+    if (P.muted) {
+      audio.stopAll(0.2);
+      try {
+        speechSynthesis.cancel();
+      } catch (_) {}
+    }
     syncSoundBtn();
   });
 
@@ -692,13 +867,17 @@ function initPractice() {
       P.pushed = false;
       teardown();
     }
+    // after the browser restores scroll for this history step, go where the user asked
+    if (P.pendingScroll) setTimeout(scrollToPending, 60);
   });
 
   document.addEventListener('keydown', (e) => {
     if (P.el.hidden) return;
     if (e.key === 'Escape') {
       e.preventDefault();
-      closePractice();
+      if (!$('#pr-confirm').hidden) cancelEnd();
+      else if (P.el.dataset.view === 'stage') requestEnd('close');
+      else closePractice();
     } else if (e.key === ' ' && P.el.dataset.view === 'stage' && !e.target.closest('button, input')) {
       e.preventDefault();
       $('#btn-play').click();
@@ -832,12 +1011,9 @@ function today(d = new Date()) {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
 
-function renderProgress() {
-  const log = store.get('neshimot.log', []);
-  const days = new Map();
-  log.forEach((s) => days.set(s.d, (days.get(s.d) || 0) + s.m));
-
-  // streak: consecutive days up to today (or yesterday, if today isn't done yet)
+/** Consecutive practice days up to today (or yesterday, if today isn't done yet). */
+function streakDays() {
+  const days = new Set(store.get('neshimot.log', []).map((s) => s.d));
   let streak = 0;
   const d = new Date();
   if (!days.has(today(d))) d.setDate(d.getDate() - 1);
@@ -845,6 +1021,14 @@ function renderProgress() {
     streak++;
     d.setDate(d.getDate() - 1);
   }
+  return streak;
+}
+
+function renderProgress() {
+  const log = store.get('neshimot.log', []);
+  const days = new Map();
+  log.forEach((s) => days.set(s.d, (days.get(s.d) || 0) + s.m));
+  const streak = streakDays();
 
   const week = [];
   for (let i = 6; i >= 0; i--) {
@@ -880,9 +1064,12 @@ function cpRating(s) {
   return '40 s or more — excellent breathing efficiency.';
 }
 
+const fmtDay = (d) => new Date(`${d}T12:00:00`).toLocaleDateString('en', { day: 'numeric', month: 'short' });
+
 function renderCP() {
   const svg = $('#cp-chart');
-  const data = store.get('neshimot.cp', []).slice(-12);
+  const all = store.get('neshimot.cp', []);
+  const data = all.slice(-12);
   const W = 420, H = 150, L = 30, R = 410, T = 10, B = 124;
   const y = (s) => B - (Math.min(s, 60) / 60) * (B - T);
   const bands = [
@@ -900,9 +1087,25 @@ function renderCP() {
     const pts = data.map((p, i) => `${x(i).toFixed(1)},${y(p.s).toFixed(1)}`);
     if (data.length > 1) h += `<polyline class="cp-line" points="${pts.join(' ')}"/>`;
     h += data.map((p, i) => `<circle class="cp-dot" cx="${x(i).toFixed(1)}" cy="${y(p.s).toFixed(1)}" r="4"><title>${p.d}: ${p.s.toFixed(1)} s</title></circle>`).join('');
-    h += `<text x="${L}" y="${H - 6}">${data[0].d.slice(5).replace('-', '/')}</text><text x="${R}" y="${H - 6}" text-anchor="end">${data[data.length - 1].d.slice(5).replace('-', '/')}</text>`;
+    const first = data[0].d;
+    const last = data[data.length - 1].d;
+    h +=
+      first === last
+        ? `<text x="${(L + R) / 2}" y="${H - 6}" text-anchor="middle">${fmtDay(first)}</text>`
+        : `<text x="${L}" y="${H - 6}">${fmtDay(first)}</text><text x="${R}" y="${H - 6}" text-anchor="end">${fmtDay(last)}</text>`;
   }
   svg.innerHTML = h;
+
+  // recent readings, each removable on its own
+  const list = $('#cp-list');
+  const recent = all.map((r, i) => ({ ...r, i })).slice(-5).reverse();
+  list.innerHTML = recent
+    .map(
+      (r) =>
+        `<li><span>${fmtDay(r.d)}</span><b>${r.s.toFixed(1)} s</b><button type="button" class="cp-del" data-i="${r.i}" aria-label="Delete the ${r.s.toFixed(1)} second reading from ${fmtDay(r.d)}">×</button></li>`
+    )
+    .join('');
+  list.hidden = !recent.length;
 }
 
 function initProgress() {
@@ -938,6 +1141,15 @@ function initProgress() {
       $('#cp-result').textContent = cpRating(s);
       renderCP();
     }
+  });
+  $('#cp-list').addEventListener('click', (e) => {
+    const b = e.target.closest('.cp-del');
+    if (!b) return;
+    const cp = store.get('neshimot.cp', []);
+    cp.splice(+b.dataset.i, 1);
+    store.set('neshimot.cp', cp);
+    renderCP();
+    $('#cp-result').textContent = 'Reading removed.';
   });
   $('#reset-data').addEventListener('click', () => {
     if (!confirm('Clear your practice history and breath-hold results on this device?')) return;

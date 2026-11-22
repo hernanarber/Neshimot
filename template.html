@@ -96,7 +96,7 @@
       <div class="wrap">
         <header class="section-head reveal">
           <p class="eyebrow">The practices</p>
-          <h2 id="practices-title" class="section-title"><!--@countword--> breaths for every day</h2>
+          <h2 id="practices-title" class="section-title"><!--@countword--> practices for every day</h2>
           <p class="section-lede">Each practice has a purpose. Read the technique, look at its rhythm, then press <em>Begin</em> — the timer guides every inhale, hold and exhale with light and sound.</p>
         </header>
         <div class="filters reveal" role="group" aria-label="Filter by purpose"><!--@filters--></div>
@@ -184,6 +184,7 @@
             </div>
             <p class="cp-result" id="cp-result" aria-live="polite"></p>
             <svg class="cp-chart" id="cp-chart" viewBox="0 0 420 150" role="img" aria-label="Your breath-hold results over time"></svg>
+            <ul class="cp-list" id="cp-list" aria-label="Recent readings" hidden></ul>
             <p class="lab-fine">Reference ranges from Buteyko practice: under 10s — strained · 10–20s — room to grow · 20–40s — good · 40s+ — excellent. A training gauge, not a medical test.</p>
           </div>
         </div>
@@ -241,6 +242,7 @@
           <span class="setup-label" id="su-dose-label">Duration</span>
           <div class="seg" id="su-dose" role="radiogroup" aria-labelledby="su-dose-label"></div>
         </div>
+        <p class="setup-note" id="su-note" hidden></p>
         <div class="setup-row">
           <label class="setup-label" for="su-pace">Pace</label>
           <div class="pace">
@@ -250,6 +252,11 @@
           </div>
         </div>
         <p class="setup-calc" id="su-calc"></p>
+        <div class="setup-caution" id="su-caution" hidden>
+          <p><strong>Before you begin</strong><span id="su-caution-text"></span></p>
+          <a class="link-btn" id="su-caution-link" href="#safety">Read the full safety notes</a>
+          <label class="ack" id="su-ack-row" hidden><input type="checkbox" id="su-ack" /> <span>I've read the safety notes and this practice is right for me</span></label>
+        </div>
         <div class="toggles">
           <button class="toggle" type="button" data-pref="sound" aria-pressed="true"><span class="tg"></span>Breath tones</button>
           <button class="toggle" type="button" data-pref="wind" aria-pressed="false"><span class="tg"></span>Desert wind</button>
@@ -260,7 +267,7 @@
           <button class="btn btn-primary btn-lg" type="button" id="su-start">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>Start
           </button>
-          <button class="link-btn" type="button" id="su-preview">Hear the tones</button>
+          <button class="link-btn" type="button" id="su-preview" aria-pressed="false">Hear the tones</button>
         </div>
       </div>
     </section>
@@ -274,15 +281,15 @@
           <circle class="ring-track" cx="50" cy="50" r="49"/>
           <circle class="ring-prog" id="ring" cx="50" cy="50" r="49"/>
         </svg>
+        <div class="nostrils" id="nostrils" hidden aria-hidden="true">
+          <span data-side="left">Left</span><span class="ns-bridge"></span><span data-side="right">Right</span>
+        </div>
       </div>
       <div class="orb-caption">
         <p class="cue" id="cue">Get ready</p>
         <p class="count" id="count"></p>
       </div>
       <p class="hint" id="hint"></p>
-      <div class="nostrils" id="nostrils" hidden aria-hidden="true">
-        <span data-side="left">Left</span><span class="ns-bridge"></span><span data-side="right">Right</span>
-      </div>
       <p class="pr-round" id="round"></p>
     </section>
 
@@ -291,7 +298,16 @@
       <div class="done-mark"><!--@figuredone--></div>
       <h3 class="done-title">Well breathed.</h3>
       <p class="done-sub" id="done-sub"></p>
-      <p class="done-note">Sit for a few more breaths and notice how you feel.</p>
+      <p class="done-streak" id="done-streak"></p>
+      <div class="mood" id="mood" role="group" aria-labelledby="mood-q">
+        <p class="mood-q" id="mood-q">How do you feel?</p>
+        <div class="mood-opts">
+          <button type="button" data-mood="calmer" aria-pressed="false">Calmer</button>
+          <button type="button" data-mood="same" aria-pressed="false">About the same</button>
+          <button type="button" data-mood="energised" aria-pressed="false">Energised</button>
+        </div>
+        <p class="mood-thanks" id="mood-thanks" hidden>Noted — sit for a few more breaths before you go.</p>
+      </div>
       <div class="setup-actions">
         <button class="btn btn-primary" type="button" id="done-close">Return</button>
         <button class="link-btn" type="button" id="done-again">Practise again</button>
@@ -299,7 +315,7 @@
     </section>
 
     <footer class="pr-bar" id="pr-bar">
-      <div class="pr-progress" aria-hidden="true"><div class="pr-progress-fill" id="prog"></div></div>
+      <div class="pr-progress" aria-hidden="true"><div class="pr-progress-fill" id="prog"></div><div class="pr-ticks" id="pr-ticks"></div></div>
       <div class="pr-controls">
         <span class="pr-time" id="t-el">0:00</span>
         <button class="icon-btn" type="button" id="btn-sound" aria-label="Mute tones" aria-pressed="false">
@@ -316,6 +332,16 @@
         <span class="pr-time pr-time-r" id="t-rem">0:00</span>
       </div>
     </footer>
+    <div class="pr-confirm" id="pr-confirm" hidden>
+      <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-text">
+        <p class="confirm-title" id="cf-title">End this session?</p>
+        <p class="confirm-text" id="cf-text"></p>
+        <div class="confirm-actions">
+          <button class="btn btn-ghost" type="button" id="cf-cancel">Keep breathing</button>
+          <button class="btn btn-primary" type="button" id="cf-ok">End session</button>
+        </div>
+      </div>
+    </div>
     <div class="sr-only" aria-live="polite" id="pr-live"></div>
   </div>
 

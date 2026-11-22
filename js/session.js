@@ -1,6 +1,7 @@
 // Neshimot — breath session engine.
-// Builds a flat timeline of phases, then drives it from the audio clock (sample-accurate),
-// scheduling sound slightly ahead so timing stays exact even when the tab is in the background.
+// Builds a flat timeline of phases and drives it from the system clock, so the on-screen timer
+// never stalls with the audio device. Sounds are mapped onto the audio clock and scheduled
+// slightly ahead, which keeps them precise even when the tab is in the background.
 
 import { expandPattern, targetLevel, roundsFor } from './data.js';
 
@@ -23,7 +24,10 @@ export function buildTimeline(plan, { pace = 1, prep = 4 } = {}) {
     const ex = item.exercise;
     const cyc = expandPattern(ex.pattern).map((p) => ({ ...p, s: +(p.s * pace).toFixed(3) }));
     const rounds = roundsFor(ex, item, pace);
-    if (idx === 0) push({ t: 'prep', s: prep, cue: 'Get ready', hint: 'Settle in · sit tall · soften the shoulders', item: idx });
+    if (idx === 0) {
+      const pr = ex.prep || { cue: 'Get ready', hint: 'Settle in · sit tall · soften the shoulders' };
+      push({ t: 'prep', s: prep, cue: pr.cue, hint: pr.hint, item: idx });
+    }
     else push({ t: 'interlude', s: 8, cue: 'Next', hint: ex.name, item: idx });
     for (let r = 1; r <= rounds; r++) {
       for (const p of cyc) push({ ...p, item: idx, round: r, rounds });
@@ -78,7 +82,7 @@ export class Session {
   }
 
   _clock() {
-    return this._useAudioClock ? this.audio.now() : performance.now() / 1000;
+    return performance.now() / 1000;
   }
 
   elapsed() {
@@ -86,10 +90,10 @@ export class Session {
     return this._pausedAt || 0;
   }
 
-  /** Call inside a user gesture (after audio.unlock()). */
+  /** Call inside a user gesture (right after audio.unlock()). */
   start() {
     if (this.state !== 'ready') return;
-    this._useAudioClock = this.audio.running;
+    this._audioWasRunning = false;
     if (this.audio.ctx) this.audio.ctx.addEventListener('statechange', this._onCtxState);
     this._pausedAt = 0;
     this._run(0);
@@ -118,9 +122,9 @@ export class Session {
     this.hooks.onState?.('paused');
   }
 
+  /** Resumes exactly where it paused — the remaining part of the current phase, not a restart. */
   resume() {
     if (this.state !== 'paused') return;
-    this._useAudioClock = this.audio.running;
     this._run(this._pausedAt);
   }
 
@@ -135,8 +139,8 @@ export class Session {
   }
 
   _onCtxState() {
-    // An audio interruption (phone call, Siri, tab suspension) freezes the clock: pause cleanly.
-    if (this.state === 'running' && this._useAudioClock && !this.audio.running) this.pause();
+    // An audio interruption (phone call, Siri, screen lock on iOS) silences the guide: pause cleanly.
+    if (this.state === 'running' && this._audioWasRunning && !this.audio.running) this.pause();
   }
 
   _indexAt(t) {
@@ -154,26 +158,26 @@ export class Session {
     if (this.state !== 'running') return;
     const e = this.elapsed();
     if (e >= this.total) return this._complete();
-    if (!this._useAudioClock || this.audio.muted) {
-      // keep the pointer moving so unmuting mid-session doesn't replay old sounds
-      while (this._nextSound < this.tl.length && this.tl[this._nextSound].start <= e + LOOKAHEAD) this._nextSound++;
+    const a = this.audio;
+    if (!a.running || a.silent) {
+      // nothing audible: only skip what has already passed, so sound picks up cleanly when it returns
+      while (this._nextSound < this.tl.length && this.tl[this._nextSound].start <= e) this._nextSound++;
       return;
     }
-    const a = this.audio;
+    this._audioWasRunning = true;
+    const now = this._clock();
     while (this._nextSound < this.tl.length && this.tl[this._nextSound].start <= e + LOOKAHEAD) {
       const ph = this.tl[this._nextSound++];
       if (!ph.sound) continue;
-      let when = this._anchor + ph.start;
       let dur = ph.soundDur || ph.s;
-      const late = a.now() - when;
-      if (late > 0.05) {
-        // resuming mid-phase: play only sustained sounds, for the remaining time
+      const lead = this._anchor + ph.start - now; // seconds until this phase starts (negative = late)
+      if (lead < -0.05) {
+        // resuming or unmuting mid-phase: play only sustained sounds, for the remaining time
         if (ph.sound !== 'in' && ph.sound !== 'out') continue;
-        dur -= late;
+        dur += lead;
         if (dur < 0.6) continue;
-        when = a.now() + 0.02;
       }
-      when = Math.max(when, a.now());
+      const when = a.now() + Math.max(0.02, lead);
       switch (ph.sound) {
         case 'in': a.inhale(when, dur); break;
         case 'out': a.exhale(when, dur); break;
@@ -227,7 +231,7 @@ export class Session {
     cancelAnimationFrame(this._raf);
     this._pausedAt = this.total;
     this.state = 'done';
-    if (this._useAudioClock) {
+    if (this.audio.running && !this.audio.silent) {
       const t = this.audio.now() + 0.3;
       this.audio.bowl(t, 293.66, 0.1);
       this.audio.bowl(t + 1.4, 440, 0.07);

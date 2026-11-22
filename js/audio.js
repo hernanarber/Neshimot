@@ -8,7 +8,8 @@ const N = { D2: 73.42, A2: 110, D3: 146.83, D4: 293.66, A4: 440, D5: 587.33, Fs5
 export class BreathAudio {
   constructor() {
     this.ctx = null;
-    this.muted = false;
+    this.muted = false; // master mute: tones + wind
+    this.tonesOn = true; // breath tones only (wind keeps playing)
     this.volume = 0.85;
     this.voices = new Set();
     this.wind = null;
@@ -52,16 +53,21 @@ export class BreathAudio {
     this.master.connect(comp);
     comp.connect(ctx.destination);
 
+    // tones bus — separate from the master so "Breath tones off" leaves the wind playing
+    this.tones = ctx.createGain();
+    this.tones.gain.value = this.tonesOn ? 1 : 0;
+    this.tones.connect(this.master);
+
     this.dry = ctx.createGain();
     this.dry.gain.value = 0.85;
-    this.dry.connect(this.master);
+    this.dry.connect(this.tones);
 
     this.reverb = ctx.createConvolver();
     this.reverb.buffer = this._impulse(4, 2.8);
     this.wet = ctx.createGain();
     this.wet.gain.value = 0.5;
     this.reverb.connect(this.wet);
-    this.wet.connect(this.master);
+    this.wet.connect(this.tones);
 
     this.bus = ctx.createGain();
     this.bus.connect(this.dry);
@@ -317,6 +323,16 @@ export class BreathAudio {
       } catch (_) {}
     }
     this.voices.clear();
+  }
+
+  /** True when nothing scheduled would be heard — lets the session skip scheduling. */
+  get silent() {
+    return this.muted || !this.tonesOn;
+  }
+
+  setTonesOn(on) {
+    this.tonesOn = on;
+    if (this.ctx) this.tones.gain.setTargetAtTime(on ? 1 : 0, this.ctx.currentTime, 0.06);
   }
 
   setMuted(m) {

@@ -2,6 +2,9 @@
 // Every practice is pure data: the breath timer, pattern graphs and page sections are generated from it.
 // Phase types: 'in' | 'out' | 'hold' | 'rest'. Optional: to (lung level 0–1), side ('left'|'right'), perc (percussive cue).
 // pose: how the breathing figure holds its hands — 'rest' (default), 'belly', 'nose' or 'hum'.
+// say: spoken wording for voice cues when it differs from the on-screen cue.
+// prep: custom 'get ready' cue; doseNote: guidance under the duration picker;
+// cautionShort: one-line safety note shown before starting; ack: needs a one-time safety acknowledgement.
 
 export const CATEGORIES = {
   Foundation: { color: 'var(--cat-foundation)', blurb: 'Rebuild a natural, efficient breath.' },
@@ -77,6 +80,7 @@ export const EXERCISES = [
       'Rest your hands on the belly, then the ribs, then the chest to feel each wave arrive.',
     ],
     caution: 'If you feel light-headed, make the inhale smaller and return to simple belly breathing.',
+    cautionShort: 'Feeling light-headed? Make the inhale smaller and return to belly breathing.',
   },
   {
     id: 'coherent',
@@ -144,6 +148,7 @@ export const EXERCISES = [
       'Use it before a performance, a difficult conversation or sleep.',
     ],
     caution: 'Skip the holds if you are pregnant or have uncontrolled high blood pressure — simply breathe 4 in and 4 out.',
+    cautionShort: 'Pregnant or high blood pressure? Skip the holds and simply breathe 4 in, 4 out.',
   },
   {
     id: 'alternate-nostril',
@@ -158,10 +163,10 @@ export const EXERCISES = [
     dose: { type: 'minutes', value: 5, options: [3, 5, 10] },
     roundLabel: 'Round',
     pattern: [
-      { t: 'in', s: 4, side: 'left', cue: 'In · left', hint: 'Thumb closes the right nostril' },
-      { t: 'out', s: 6, side: 'right', cue: 'Out · right', hint: 'Ring finger closes the left' },
-      { t: 'in', s: 4, side: 'right', cue: 'In · right', hint: 'Stay on the right side' },
-      { t: 'out', s: 6, side: 'left', cue: 'Out · left', hint: 'Switch — thumb closes the right' },
+      { t: 'in', s: 4, side: 'left', cue: 'In · left', say: 'Inhale left', hint: 'Thumb closes the right nostril' },
+      { t: 'out', s: 6, side: 'right', cue: 'Out · right', say: 'Exhale right', hint: 'Ring finger closes the left' },
+      { t: 'in', s: 4, side: 'right', cue: 'In · right', say: 'Inhale right', hint: 'Stay on the right side' },
+      { t: 'out', s: 6, side: 'left', cue: 'Out · left', say: 'Exhale left', hint: 'Switch — thumb closes the right' },
     ],
     summary:
       'By guiding the breath through one nostril at a time, this classical practice slows the breath, sharpens attention and leaves a distinct feeling of balance. It is a favourite before meditation, study or sleep.',
@@ -223,6 +228,8 @@ export const EXERCISES = [
     tagline: 'A natural tranquilliser for the nervous system.',
     patternLabel: 'In 4 · Hold 7 · Out 8',
     dose: { type: 'rounds', value: 4, options: [4, 6, 8], unit: 'cycles' },
+    doseNote: 'New to 4-7-8? Stay with 4 cycles for the first month.',
+    prep: { cue: 'Exhale fully', hint: 'Whoosh all the air out through the mouth' },
     roundLabel: 'Cycle',
     pattern: [
       { t: 'in', s: 4, cue: 'Breathe in', hint: 'Quietly through the nose' },
@@ -247,6 +254,7 @@ export const EXERCISES = [
       'Mild light-headedness at first is common and passes with practice.',
     ],
     caution: 'Never practise while driving. Skip the hold if you are pregnant or have uncontrolled high blood pressure.',
+    cautionShort: 'Never practise while driving. Skip the hold if pregnant or with high blood pressure.',
   },
   {
     id: 'humming',
@@ -298,12 +306,12 @@ export const EXERCISES = [
         repeat: 30,
         counter: 'Pump',
         phases: [
-          { t: 'out', s: 0.6, to: 0.36, perc: true, cue: 'Pump', hint: 'Snap the lower belly in' },
-          { t: 'in', s: 0.4, to: 0.6, cue: 'Pump', hint: 'Let the inhale happen by itself' },
+          { t: 'out', s: 0.6, to: 0.36, perc: true, cue: 'Pump', hint: 'Snap the belly in — the inhale happens by itself' },
+          { t: 'in', s: 0.4, to: 0.6, cue: 'Pump', hint: 'Snap the belly in — the inhale happens by itself' },
         ],
       },
       { t: 'in', s: 4, to: 1, cue: 'Breathe in fully', hint: 'Fill up slowly' },
-      { t: 'hold', s: 12, cue: 'Hold', hint: 'Soft throat · relaxed shoulders' },
+      { t: 'hold', s: 12, cue: 'Hold', hint: 'Stay soft · release early if you feel dizzy' },
       { t: 'out', s: 6, cue: 'Breathe out', hint: 'Slowly, all the way' },
       { t: 'rest', s: 8, cue: 'Breathe naturally', hint: 'Recover before the next round' },
     ],
@@ -321,10 +329,13 @@ export const EXERCISES = [
       'Rapid, forceful breathing briefly activates the sympathetic nervous system — the opposite effect of slow breathing — raising alertness and arousal. The closing hold lets carbon dioxide rebalance after the pumping. Keep sessions short and build up gradually.',
     tips: [
       'Keep the face and shoulders completely relaxed — only the belly works.',
+      'After two to three weeks of comfortable practice, build up gradually: a few more pumps per round, or a slightly faster pace.',
       'Quality over speed: slow the Pace if the rhythm becomes ragged.',
     ],
     caution:
       'Avoid if pregnant, during menstruation, or with high blood pressure, heart disease, epilepsy, hernia, glaucoma or recent abdominal surgery. Stop if you feel dizzy. Never practise in water or while driving.',
+    cautionShort: 'Not for pregnancy, high blood pressure, heart disease, epilepsy, hernia or recent abdominal surgery. Stop if dizzy.',
+    ack: true,
   },
   {
     id: 'connected',
@@ -335,7 +346,7 @@ export const EXERCISES = [
     icon: 'circle',
     tagline: 'A seamless circle of breath — no pause, nothing held.',
     patternLabel: 'In 3 · Out 2 · no pauses',
-    dose: { type: 'minutes', value: 4, options: [3, 5, 8] },
+    dose: { type: 'minutes', value: 3, options: [3, 5, 8] },
     roundLabel: 'Breath',
     pattern: [
       { t: 'in', s: 3, cue: 'Draw in', hint: 'Full and active' },
@@ -345,7 +356,7 @@ export const EXERCISES = [
     summary:
       'In conscious connected breathing the inhale flows straight into the exhale and the exhale straight into the next inhale, forming an unbroken circle. The inhale is full and active; the exhale is simply released, never pushed. Central to many breath-therapy traditions, it can bring up strong sensations and emotions — this gentle daily version keeps the rhythm slow and the session short.',
     steps: [
-      'Lie down or recline somewhere safe and comfortable. Breathe through the nose.',
+      'Sit supported against a wall or cushions, or lie down, somewhere safe and comfortable. Breathe through the nose.',
       'Draw the inhale in actively and fully for 3 counts, filling the belly, then the chest.',
       'Without pausing, release the exhale for 2 counts — let it fall out like a sigh, with no effort or control.',
       'Keep the circle turning with no pause at the top or bottom for the length of the session.',
@@ -360,6 +371,8 @@ export const EXERCISES = [
     ],
     caution:
       'Practise lying down or seated — never in water, standing or while driving. Avoid if pregnant, or with epilepsy, cardiovascular disease, glaucoma, recent surgery or a serious psychiatric condition. Deeper sessions are best done with a trained breath therapist.',
+    cautionShort: 'Seated or lying down only — never in water or while driving. Not for pregnancy, epilepsy or heart conditions.',
+    ack: true,
   },
 ];
 
@@ -456,7 +469,12 @@ export function cycleSeconds(ex, pace = 1) {
 
 export function roundsFor(ex, dose, pace = 1) {
   if (dose.rounds) return dose.rounds;
-  return Math.max(1, Math.round((dose.minutes * 60) / cycleSeconds(ex, pace)));
+  const target = dose.minutes * 60;
+  const c = cycleSeconds(ex, pace);
+  let r = Math.max(1, Math.round(target / c));
+  // never run noticeably longer than the duration someone picked
+  if (r > 1 && r * c > target * 1.1) r = Math.max(1, Math.floor(target / c));
+  return r;
 }
 
 export const byId = (id) => EXERCISES.find((e) => e.id === id);
