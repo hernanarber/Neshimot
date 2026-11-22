@@ -1,4 +1,4 @@
-// Ruach — symbolic illustrations and breath-pattern graphs (inline SVG).
+// Neshimot — symbolic illustrations, the breathing figure and breath-pattern graphs (inline SVG).
 import { expandPattern, targetLevel } from './data.js';
 
 const ic = (body) =>
@@ -47,7 +47,7 @@ export function starMark(size = 28, cls = '') {
 
 const fmt = (n) => (Math.round(n * 10) / 10).toString();
 
-function segmentsFor(pattern, cycles = 1) {
+export function segmentsFor(pattern, cycles = 1) {
   const one = expandPattern(pattern);
   const seq = [];
   for (let c = 0; c < cycles; c++) one.forEach((p) => seq.push({ ...p, cycle: c }));
@@ -67,7 +67,7 @@ function segmentsFor(pattern, cycles = 1) {
 
 const easeCos = (u) => 0.5 - 0.5 * Math.cos(Math.PI * u);
 
-function levelAt(seg, u) {
+export function levelAt(seg, u) {
   if (seg.t === 'rest') return seg.from + (seg.to - seg.from) * easeCos(Math.min(1, u * 3)) + 0.06 * Math.sin(u * Math.PI * 2 * Math.max(1, seg.s / 4));
   return seg.from + (seg.to - seg.from) * easeCos(u);
 }
@@ -141,9 +141,12 @@ export function patternSVG(ex, { mini = false, cycles } = {}) {
   }
 
   const id = `pgf-${ex.id}-${mini ? 'm' : 'l'}`;
-  return `<svg class="pattern-graph ${mini ? 'is-mini' : ''}" viewBox="0 0 ${W} ${H}"${mini ? ' preserveAspectRatio="none"' : ''} role="img" aria-label="Breath pattern: ${ex.patternLabel}">
+  // live playhead (big graphs only) — moved by the chapter figure animation, synced to its breath
+  const head = mini ? '' : `<circle class="pg-head" r="6" cx="${x(0).toFixed(1)}" cy="${y(segs[0].from).toFixed(1)}"/>`;
+  const geo = mini ? '' : ` data-geo="${pl},${pr},${pt},${pb},${W},${H},${total},${n}"`;
+  return `<svg class="pattern-graph ${mini ? 'is-mini' : ''}" viewBox="0 0 ${W} ${H}"${mini ? ' preserveAspectRatio="none"' : ''}${geo} role="img" aria-label="Breath pattern: ${ex.patternLabel}">
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBC07E" stop-opacity=".22"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></linearGradient></defs>
-    ${ticks}<path d="${fill}" fill="url(#${id})" stroke="none"/>${paths}${labels}</svg>`;
+    ${ticks}<path d="${fill}" fill="url(#${id})" stroke="none"/>${paths}${labels}${head}</svg>`;
 }
 
 /** Sun on its arc across the sky — position 0 (sunrise) to 1 (sunset). */
@@ -160,5 +163,56 @@ export function sunArcSVG(pos, id) {
     <path d="M0,${cy + 8} C60,${cy + 2} 120,${cy + 10} 240,${cy + 4} L240,120 L0,120Z" fill="#231A2C"/>
     <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="30" fill="url(#sg-${id})"/>
     <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="8" fill="${tone}"/>
+  </svg>`;
+}
+
+/* ------------------------------------------------------------------
+   The breathing figure — a person seated cross-legged before the sun.
+   Driven entirely by the CSS custom property --lvl (0 = empty, 1 = full lungs):
+   the torso widens, shoulders and head rise, and light fills the body from the
+   belly upward. Poses: rest (hands on knees), belly (hands on chest & belly),
+   nose (hand at the nose — alternate nostril), hum (hands at the ears).
+   ------------------------------------------------------------------ */
+const FIG = {
+  torso:
+    'M-5.5,-47.5 C-5.8,-42.5 -9,-40 -16,-38 C-23.5,-36 -29,-32.5 -30,-25.5 C-31,-15 -27.5,-4 -26.5,6 C-26,15 -27.5,23 -30,33 L30,33 C27.5,23 26,15 26.5,6 C27.5,-4 31,-15 30,-25.5 C29,-32.5 23.5,-36 16,-38 C9,-40 5.8,-42.5 5.5,-47.5 Z',
+  legs: 'M-29,28 C-47,28 -65,36 -71,48 C-73.5,54 -66,59.5 -54,59.5 C-36,59.5 -18,55.5 0,55.5 C18,55.5 36,59.5 54,59.5 C66,59.5 73.5,54 71,48 C65,36 47,28 29,28 Z',
+  shins: 'M-46,49.5 C-30,44.5 -12,47 3,52 M46,48.5 C30,44 13,46.5 -3,51',
+  restL: 'M-27,-31 C-34,-21 -37.5,-9 -37,1 C-36.5,11 -42,21 -51,31',
+  restR: 'M27,-31 C34,-21 37.5,-9 37,1 C36.5,11 42,21 51,31',
+  bellyL: 'M-27,-31 C-35,-22 -39,-12 -37,-5 C-35,1 -21,-12 -10,-20',
+  bellyR: 'M27,-31 C34,-20 38.5,-8 37,0 C35.5,7 20,9 8,9',
+  noseL: 'M-27,-31 C-34,-22 -38,-13 -35.5,-8 C-32,-2 -14,-38 -4.5,-56.5',
+  earL: 'M-27,-31 C-37,-33 -46,-38 -45.5,-46 C-45,-55 -27,-62 -15,-62',
+  earR: 'M27,-31 C37,-33 46,-38 45.5,-46 C45,-55 27,-62 15,-62',
+};
+
+export function figureSVG({ uid = 'fig', pose = 'rest', cls = '', id = '', label = '' } = {}) {
+  const limb = (d, c) => `<path class="fig-limb-o ${c}" d="${d}"/><path class="fig-limb ${c}" d="${d}"/>`;
+  const a11y = label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"';
+  return `<svg class="fig ${cls}"${id ? ` id="${id}"` : ''} viewBox="-100 -100 200 200" data-pose="${pose}" ${a11y}>
+    <defs>
+      <radialGradient id="${uid}-sun"><stop class="sun-a" offset="0"/><stop class="sun-b" offset=".42"/><stop class="sun-c" offset=".72"/><stop class="sun-d" offset="1"/></radialGradient>
+      <linearGradient id="${uid}-air" x1="0" y1="1" x2="0" y2="0"><stop class="air-a" offset="0"/><stop class="air-b" offset=".55"/><stop class="air-c" offset="1"/></linearGradient>
+      <radialGradient id="${uid}-heart"><stop class="heart-a" offset="0"/><stop class="heart-b" offset=".5"/><stop class="heart-c" offset="1"/></radialGradient>
+      <clipPath id="${uid}-clip"><path d="${FIG.torso}"/></clipPath>
+    </defs>
+    <circle class="fig-sun" cx="0" cy="-22" r="66" fill="url(#${uid}-sun)"/>
+    <path class="fig-ground" d="M-98,60 C-60,54 -30,57 0,57 C30,57 60,54 98,60"/>
+    <g class="fig-body">
+      <g class="fig-torso">
+        <path class="fig-sil" d="${FIG.torso}"/>
+        <g clip-path="url(#${uid}-clip)">
+          <rect class="fig-air" x="-32" y="-48" width="64" height="76" fill="url(#${uid}-air)"/>
+          <circle class="fig-heart" cx="0" cy="-20" r="15" fill="url(#${uid}-heart)"/>
+        </g>
+      </g>
+      <path class="fig-sil" d="${FIG.legs}"/>
+      <path class="fig-shin" d="${FIG.shins}"/>
+      <g class="fig-arms">${limb(FIG.restL, 'arm-rest-l')}${limb(FIG.restR, 'arm-rest-r')}</g>
+      <g class="fig-head"><ellipse class="fig-sil" cx="0" cy="-62" rx="12" ry="14.5"/></g>
+      <g class="fig-arms-front">${limb(FIG.bellyL, 'arm-belly')}${limb(FIG.bellyR, 'arm-belly')}${limb(FIG.noseL, 'arm-nose')}${limb(FIG.earL, 'arm-ear')}${limb(FIG.earR, 'arm-ear')}</g>
+      <g class="fig-hum"><path d="M-11,-84 Q0,-89 11,-84"/><path d="M-17,-90 Q0,-97 17,-90"/><path d="M-23,-96 Q0,-105 23,-96"/></g>
+    </g>
   </svg>`;
 }

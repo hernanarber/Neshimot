@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { cardsHTML, chaptersHTML, ritualsHTML, principlesHTML, safetyHTML, filterHTML, COUNT } from './js/render.js';
-import { starMark, ICONS } from './js/graphs.js';
+import { starMark, ICONS, figureSVG } from './js/graphs.js';
 
 const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
 const dir = new URL('.', import.meta.url);
@@ -20,6 +20,8 @@ const parts = {
   countword: words[COUNT] || String(COUNT),
   star: starMark(22, 'mark'),
   hourglass: ICONS.hourglass,
+  figure: figureSVG({ uid: 'pr', id: 'fig', cls: 'orb-fig' }),
+  figuredone: figureSVG({ uid: 'dn', cls: 'done-fig' }),
   filters: filterHTML(),
   cards: cardsHTML(),
   chapters: chaptersHTML(),

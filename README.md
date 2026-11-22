@@ -1,6 +1,6 @@
-# Ruach — Daily Breathing Practice
+# Neshimot — Daily Breathing Practice
 
-A static, dependency-free website of guided daily breathing exercises with a live breath timer,
+A static, dependency-free website of guided daily breathing exercises ("Neshimot" — Hebrew for "breaths") with a live breath timer, a breathing human figure,
 illustrated breath-pattern graphs, generative audio (higher pad on the inhale, low bass on the exhale)
 and a Middle Eastern desert theme. Installable as a PWA and usable offline after the first visit.
 

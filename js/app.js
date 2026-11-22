@@ -1,7 +1,8 @@
-// Ruach — application controller.
+// Neshimot — application controller.
 import { RITUALS, byId, cycleSeconds, roundsFor } from './data.js';
 import { BreathAudio } from './audio.js';
 import { Session } from './session.js';
+import { segmentsFor, levelAt } from './graphs.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -34,8 +35,14 @@ const store = {
   },
 };
 
-const prefs = Object.assign({ sound: true, wind: false, voice: false, haptic: true, pace: 1 }, store.get('ruach.prefs', {}));
-const savePrefs = () => store.set('ruach.prefs', prefs);
+// one-time migration of saved settings and history from the site's earlier name
+for (const k of ['prefs', 'log', 'cp']) {
+  const old = store.get(`ruach.${k}`, null);
+  if (old != null && store.get(`neshimot.${k}`, null) == null) store.set(`neshimot.${k}`, old);
+}
+
+const prefs = Object.assign({ sound: true, wind: false, voice: false, haptic: true, pace: 1 }, store.get('neshimot.prefs', {}));
+const savePrefs = () => store.set('neshimot.prefs', prefs);
 
 /* ---------------- stars ---------------- */
 function scatterStars(el, n) {
@@ -298,12 +305,10 @@ let session;
 let sand;
 const RING_C = 2 * Math.PI * 49;
 
-function buildPetals() {
-  const g = $('#petals');
-  let h = '';
-  for (let i = 0; i < 16; i++) h += `<ellipse cx="0" cy="-60" rx="7" ry="25" transform="rotate(${i * 22.5})"/>`;
-  for (let i = 0; i < 8; i++) h += `<ellipse cx="0" cy="-33" rx="5" ry="14" transform="rotate(${i * 45 + 22.5})"/>`;
-  g.innerHTML = h;
+function setPose(ex) {
+  const fig = $('#fig');
+  const pose = (ex && ex.pose) || 'rest';
+  if (fig && fig.dataset.pose !== pose) fig.dataset.pose = pose;
 }
 
 function currentPlan() {
@@ -391,6 +396,7 @@ function openPractice({ exId, ritualId, minutes }) {
   }
   renderSetup();
   setView('setup');
+  setPose(P.ex);
   P.el.dataset.phase = 'rest';
   P.el.classList.remove('is-paused');
   $('#orb').style.setProperty('--lvl', 0.32);
@@ -402,7 +408,7 @@ function openPractice({ exId, ritualId, minutes }) {
     document.body.classList.add('is-locked');
     requestAnimationFrame(() => P.el.classList.add('is-open'));
     try {
-      history.pushState({ ruach: 'practice' }, '');
+      history.pushState({ neshimot: 'practice' }, '');
       P.pushed = true;
     } catch (_) {}
   }
@@ -483,6 +489,7 @@ function onPhase(ph) {
   const item = P.plan[ph.item];
   const ex = item?.exercise;
   el.dataset.phase = ph.counter ? 'pump' : ph.t;
+  setPose(ex);
   sand.phase = ph.counter ? 'pump' : ph.t;
 
   const cue = $('#cue');
@@ -568,6 +575,7 @@ function onState(s) {
     $('#pr-title').textContent = P.kind === 'ritual' ? P.ritual.title : P.ex.name;
     $('#pr-item').textContent = 'Complete';
     setView('done');
+    P.el.dataset.phase = 'in';
     sand.setCenter($('.done-mark'));
     sand.phase = 'rest';
     setTimeout(() => $('#done-close').focus({ preventScroll: true }), 80);
@@ -579,9 +587,9 @@ function logProgress(e) {
   const secs = practicedSeconds(e);
   if (secs >= 60 || (session.state === 'done' && secs >= 20)) {
     session._logged = true;
-    const log = store.get('ruach.log', []);
+    const log = store.get('neshimot.log', []);
     log.push({ d: today(), m: Math.round((secs / 60) * 10) / 10, id: P.kind === 'ritual' ? `ritual:${P.ritual.id}` : P.ex.id });
-    store.set('ruach.log', log.slice(-800));
+    store.set('neshimot.log', log.slice(-800));
     renderProgress();
   }
   return secs;
@@ -589,7 +597,6 @@ function logProgress(e) {
 
 function initPractice() {
   P.el = $('#practice');
-  buildPetals();
   scatterStars($('#pr-stars'), 70);
   sand = new Sand($('#sand'));
   session = new Session(audio, { onPhase, onFrame, onState });
@@ -826,7 +833,7 @@ function today(d = new Date()) {
 }
 
 function renderProgress() {
-  const log = store.get('ruach.log', []);
+  const log = store.get('neshimot.log', []);
   const days = new Map();
   log.forEach((s) => days.set(s.d, (days.get(s.d) || 0) + s.m));
 
@@ -875,7 +882,7 @@ function cpRating(s) {
 
 function renderCP() {
   const svg = $('#cp-chart');
-  const data = store.get('ruach.cp', []).slice(-12);
+  const data = store.get('neshimot.cp', []).slice(-12);
   const W = 420, H = 150, L = 30, R = 410, T = 10, B = 124;
   const y = (s) => B - (Math.min(s, 60) / 60) * (B - T);
   const bands = [
@@ -925,21 +932,104 @@ function initProgress() {
         $('#cp-result').textContent = 'That was very short — breathe normally for a minute, then try again.';
         return;
       }
-      const cp = store.get('ruach.cp', []);
+      const cp = store.get('neshimot.cp', []);
       cp.push({ d: today(), s: Math.round(s * 10) / 10 });
-      store.set('ruach.cp', cp.slice(-100));
+      store.set('neshimot.cp', cp.slice(-100));
       $('#cp-result').textContent = cpRating(s);
       renderCP();
     }
   });
   $('#reset-data').addEventListener('click', () => {
     if (!confirm('Clear your practice history and breath-hold results on this device?')) return;
-    store.del('ruach.log');
-    store.del('ruach.cp');
+    ['neshimot.log', 'neshimot.cp', 'ruach.log', 'ruach.cp'].forEach((k) => store.del(k));
     renderProgress();
     $('#cp-result').textContent = '';
     out.textContent = '0.0';
   });
+}
+
+/* =================================================================
+   Practice-guide figures — each one breathes in its own practice's rhythm,
+   with a playhead tracing the same moment on the pattern graph beside it.
+   ================================================================= */
+function initFigures() {
+  const items = $$('.chapter')
+    .map((ch) => {
+      const vis = ch.querySelector('.ch-visual');
+      const fig = ch.querySelector('.ch-figure');
+      const em = ch.querySelector('.ch-emblem[data-ex]');
+      if (!vis || !fig || !em) return null;
+      const ex = byId(em.dataset.ex);
+      const segs = segmentsFor(ex.pattern, 1);
+      const cycle = segs.reduce((a, s) => a + s.s, 0);
+      const svg = ch.querySelector('.pattern-graph:not(.is-mini)');
+      const g = ((svg && svg.dataset.geo) || '').split(',').map(Number);
+      return {
+        ch,
+        vis,
+        fig,
+        segs,
+        cycle,
+        head: svg && svg.querySelector('.pg-head'),
+        geo: g.length === 8 ? { pl: g[0], pr: g[1], pt: g[2], pb: g[3], W: g[4], H: g[5], total: g[6] } : null,
+        label: ch.querySelector('.ch-phase-t'),
+        on: false,
+        t0: 0,
+        idx: -1,
+      };
+    })
+    .filter(Boolean);
+  if (!items.length) return;
+
+  if (reduceMotion.matches) {
+    items.forEach((it) => it.fig.style.setProperty('--lvl', 0.65));
+    return;
+  }
+
+  let raf = 0;
+  const frame = (now) => {
+    let any = false;
+    for (const it of items) {
+      if (!it.on) continue;
+      any = true;
+      const el = (now - it.t0) / 1000;
+      const tc = el % it.cycle;
+      let i = 0;
+      while (i < it.segs.length - 1 && tc >= it.segs[i].start + it.segs[i].s) i++;
+      const s = it.segs[i];
+      const lvl = levelAt(s, Math.min(1, (tc - s.start) / s.s));
+      it.fig.style.setProperty('--lvl', lvl.toFixed(4));
+      if (i !== it.idx) {
+        it.idx = i;
+        it.vis.dataset.phase = s.counter ? 'pump' : s.t;
+        if (it.label && it.label.textContent !== s.cue) it.label.textContent = s.cue;
+      }
+      if (it.head && it.geo) {
+        const g = it.geo;
+        const tt = el % g.total;
+        it.head.setAttribute('cx', (g.pl + (tt / g.total) * (g.W - g.pl - g.pr)).toFixed(1));
+        it.head.setAttribute('cy', (g.pt + (1 - lvl) * (g.H - g.pt - g.pb)).toFixed(1));
+      }
+    }
+    raf = any ? requestAnimationFrame(frame) : 0;
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const it = items.find((x) => x.ch === e.target);
+        if (!it) continue;
+        if (e.isIntersecting && !it.on) {
+          it.on = true;
+          it.t0 = performance.now();
+          it.idx = -1;
+        } else if (!e.isIntersecting) it.on = false;
+      }
+      if (!raf && items.some((x) => x.on)) raf = requestAnimationFrame(frame);
+    },
+    { rootMargin: '80px 0px' }
+  );
+  items.forEach((it) => io.observe(it.ch));
 }
 
 /* =================================================================
@@ -951,6 +1041,7 @@ initFilters();
 initPractice();
 initLab();
 initProgress();
+initFigures();
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));

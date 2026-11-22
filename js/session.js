@@ -1,4 +1,4 @@
-// Ruach — breath session engine.
+// Neshimot — breath session engine.
 // Builds a flat timeline of phases, then drives it from the audio clock (sample-accurate),
 // scheduling sound slightly ahead so timing stays exact even when the tab is in the background.
 

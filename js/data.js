@@ -1,6 +1,7 @@
-// Ruach — exercise library.
+// Neshimot — exercise library.
 // Every practice is pure data: the breath timer, pattern graphs and page sections are generated from it.
 // Phase types: 'in' | 'out' | 'hold' | 'rest'. Optional: to (lung level 0–1), side ('left'|'right'), perc (percussive cue).
+// pose: how the breathing figure holds its hands — 'rest' (default), 'belly', 'nose' or 'hum'.
 
 export const CATEGORIES = {
   Foundation: { color: 'var(--cat-foundation)', blurb: 'Rebuild a natural, efficient breath.' },
@@ -17,6 +18,7 @@ export const EXERCISES = [
     category: 'Foundation',
     level: 'Beginner',
     icon: 'belly',
+    pose: 'belly',
     tagline: 'Return the work of breathing to the diaphragm.',
     patternLabel: 'In 4 · Out 6',
     dose: { type: 'minutes', value: 5, options: [3, 5, 10] },
@@ -150,6 +152,7 @@ export const EXERCISES = [
     category: 'Balance',
     level: 'Beginner',
     icon: 'alternate',
+    pose: 'nose',
     tagline: 'Balance left and right, effort and ease.',
     patternLabel: 'In L 4 · Out R 6 · In R 4 · Out L 6',
     dose: { type: 'minutes', value: 5, options: [3, 5, 10] },
@@ -252,6 +255,7 @@ export const EXERCISES = [
     category: 'Calm',
     level: 'Beginner',
     icon: 'hum',
+    pose: 'hum',
     tagline: 'Let a low, gentle hum vibrate the tension away.',
     patternLabel: 'In 4 · Hum 8',
     dose: { type: 'minutes', value: 4, options: [3, 4, 7] },

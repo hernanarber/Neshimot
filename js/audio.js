@@ -1,4 +1,4 @@
-// Ruach — generative breath audio (Web Audio API, no samples).
+// Neshimot — generative breath audio (Web Audio API, no samples).
 // Inhale: a warm, rising pad in a higher register (D major, open voicing).
 // Exhale: a soft, settling bass on the root. Holds: a quiet singing-bowl tone.
 // Fast pumps: a muted frame-drum "dum". Optional ambience: filtered desert wind.

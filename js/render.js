@@ -1,6 +1,6 @@
-// Ruach — HTML renderers. Used at build time (build.mjs) to prerender the page from data.js.
+// Neshimot — HTML renderers. Used at build time (build.mjs) to prerender the page from data.js.
 import { EXERCISES, RITUALS, PRINCIPLES, SAFETY, CATEGORIES, byId, cycleSeconds } from './data.js';
-import { ICONS, patternSVG, sunArcSVG, starMark } from './graphs.js';
+import { ICONS, patternSVG, sunArcSVG, figureSVG } from './graphs.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 const catVar = (c) => `--cat:${CATEGORIES[c].color}`;
@@ -41,10 +41,12 @@ export function chaptersHTML() {
   return EXERCISES.map(
     (ex, i) => `
   <article class="chapter" id="ex-${ex.id}" style="${catVar(ex.category)}">
-    <div class="ch-visual reveal">
-      <div class="ch-emblem">
-        ${starMark(260, 'ch-star')}
-        <span class="ch-icon">${ICONS[ex.icon]}</span>
+    <div class="ch-visual reveal" data-phase="in">
+      <div class="ch-figure">
+        <div class="ch-emblem" data-ex="${ex.id}">
+          ${figureSVG({ uid: `fig-${ex.id}`, pose: ex.pose || 'rest', label: `A seated figure breathing in the ${ex.name} rhythm` })}
+        </div>
+        <p class="ch-phase" aria-hidden="true"><i></i><span class="ch-phase-t">${ex.pattern[0].cue}</span></p>
       </div>
       <figure class="ch-graph">
         ${patternSVG(ex)}

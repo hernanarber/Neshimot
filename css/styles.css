@@ -1,5 +1,5 @@
 /* =========================================================
-   Ruach — Daily Breath Practice
+   Neshimot — Daily Breath Practice
    Desert dusk palette · Cormorant Garamond + Jost
    ========================================================= */
 
@@ -49,6 +49,13 @@
 
 [hidden] {
   display: none !important;
+}
+
+/* the breath level (0 = empty, 1 = full) drives every breathing figure */
+@property --lvl {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.3;
 }
 
 html {
@@ -1019,6 +1026,13 @@ em {
   stroke: var(--line);
 }
 
+.pg-head {
+  fill: var(--cream);
+  stroke: var(--ph, var(--saffron));
+  stroke-width: 3;
+  transition: stroke 0.6s;
+}
+
 .pg-axis {
   font-family: var(--sans);
   font-size: 13px;
@@ -1078,50 +1092,230 @@ em {
   top: 110px;
 }
 
+.ch-visual {
+  --ph: var(--c-in);
+  --ph-rgb: 235 192 126;
+}
+
+.ch-figure {
+  --lvl: 0.3;
+  width: min(100%, 340px);
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
 .ch-emblem {
   position: relative;
-  width: min(100%, 340px);
   aspect-ratio: 1;
-  margin: 0 auto 36px;
-  color: var(--cat);
-}
-
-.ch-emblem::before {
-  content: '';
-  position: absolute;
-  inset: 12%;
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--cat) 22%, transparent), transparent 70%);
-  filter: blur(10px);
+  border: 1px solid var(--line);
+  background: radial-gradient(circle at 50% 38%, rgba(235, 192, 126, 0.08), transparent 62%),
+    linear-gradient(180deg, rgba(42, 29, 51, 0.7), rgba(17, 14, 26, 0.3));
+  overflow: hidden;
 }
 
-.ch-star {
+.ch-emblem .fig {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  stroke-width: 0.45;
-  opacity: 0.55;
-  animation: spin 120s linear infinite;
+  inset: 5%;
+  width: 90%;
+  height: 90%;
 }
 
-.ch-star circle {
+.ch-phase {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 0;
+  min-height: 1.4em;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sand-2);
+}
+
+.ch-phase i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ph);
+  box-shadow: 0 0 12px var(--ph);
+  transition: background 0.6s, box-shadow 0.6s;
+}
+
+/* ---------- The breathing figure ---------- */
+
+.fig {
+  overflow: visible;
+}
+
+.fig .sun-a {
+  stop-color: #fff3d9;
+  stop-opacity: 0.95;
+}
+.fig .sun-b {
+  stop-color: #f6c27e;
+  stop-opacity: 0.58;
+}
+.fig .sun-c {
+  stop-color: #e3905a;
+  stop-opacity: 0.16;
+}
+.fig .sun-d {
+  stop-color: #e3905a;
+  stop-opacity: 0;
+}
+
+.fig-sun {
+  transform-origin: 0px -22px;
+  transform: scale(calc(0.7 + var(--lvl) * 0.36));
+  opacity: calc(0.55 + var(--lvl) * 0.45);
+}
+
+.fig-ground {
+  fill: none;
+  stroke: rgba(235, 192, 126, 0.3);
+  stroke-width: 0.8;
+}
+
+.fig-sil {
+  fill: #1a1422;
+  stroke: rgba(239, 227, 207, 0.36);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+
+.fig-shin {
+  fill: none;
+  stroke: rgba(239, 227, 207, 0.2);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+}
+
+.fig-limb,
+.fig-limb-o {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fig-limb {
+  stroke: #1a1422;
+  stroke-width: 7;
+}
+
+.fig-limb-o {
+  stroke: rgba(239, 227, 207, 0.36);
+  stroke-width: 8.7;
+}
+
+.fig .air-a {
+  stop-color: var(--ph);
+  stop-opacity: 0.85;
+}
+.fig .air-b {
+  stop-color: var(--ph);
+  stop-opacity: 0.45;
+}
+.fig .air-c {
+  stop-color: var(--ph);
+  stop-opacity: 0;
+}
+.fig .heart-a {
+  stop-color: #fff3d9;
+  stop-opacity: 0.9;
+}
+.fig .heart-b {
+  stop-color: var(--ph);
+  stop-opacity: 0.45;
+}
+.fig .heart-c {
+  stop-color: var(--ph);
+  stop-opacity: 0;
+}
+
+/* breath light fills the body from the belly upward, with a soft rising edge */
+.fig-air {
+  transform-origin: 0px 28px;
+  transform: scaleY(calc(var(--lvl) * 1.12));
+  opacity: calc(0.25 + var(--lvl) * 0.9);
+}
+
+.fig-heart {
+  transform-origin: 0px -20px;
+  transform: scale(calc(0.6 + var(--lvl) * 0.6));
+  opacity: calc(var(--lvl) * 1.15 - 0.2);
+}
+
+/* the body itself breathes: ribs widen, shoulders and head rise */
+.fig-torso {
+  transform-origin: 0px 30px;
+  transform: translateY(calc(var(--lvl) * -1.2px)) scale(calc(1 + var(--lvl) * 0.055), calc(1 + var(--lvl) * 0.03));
+}
+
+.fig-head {
+  transform: translateY(calc(var(--lvl) * -2.6px));
+}
+
+.fig-arms {
+  transform: translateY(calc(var(--lvl) * -1.2px));
+}
+
+.fig-arms-front {
+  transform: translateY(calc(var(--lvl) * -1.8px));
+}
+
+.fig .arm-belly,
+.fig .arm-nose,
+.fig .arm-ear {
   display: none;
 }
 
-.ch-icon {
-  position: absolute;
-  inset: 31%;
+.fig[data-pose='belly'] .arm-belly,
+.fig[data-pose='nose'] .arm-nose,
+.fig[data-pose='hum'] .arm-ear {
+  display: inline;
 }
 
-.ch-icon .icon {
-  width: 100%;
-  height: 100%;
-  stroke-width: 1.2;
+.fig[data-pose='belly'] .arm-rest-l,
+.fig[data-pose='belly'] .arm-rest-r,
+.fig[data-pose='nose'] .arm-rest-l,
+.fig[data-pose='hum'] .arm-rest-l,
+.fig[data-pose='hum'] .arm-rest-r {
+  display: none;
 }
 
-.chapter.is-seen .ch-icon .draw {
-  animation: draw 2.6s var(--ease) both 0.2s;
+.fig-hum path {
+  fill: none;
+  stroke: var(--ph);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+[data-phase='out'] .fig[data-pose='hum'] .fig-hum path {
+  animation: hum 1.5s ease-out infinite;
+}
+
+[data-phase='out'] .fig[data-pose='hum'] .fig-hum path:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+[data-phase='out'] .fig[data-pose='hum'] .fig-hum path:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes hum {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-7px);
+  }
 }
 
 @keyframes spin {
@@ -2013,24 +2207,31 @@ input[type='range']::-moz-range-thumb {
   opacity: 1;
 }
 
-.practice[data-phase='in'] {
+[data-phase='in'] {
   --ph: var(--c-in);
   --ph-rgb: 235 192 126;
 }
 
-.practice[data-phase='hold'] {
+[data-phase='hold'] {
   --ph: var(--c-hold);
   --ph-rgb: 224 147 127;
 }
 
-.practice[data-phase='out'] {
+[data-phase='out'] {
   --ph: var(--c-out);
   --ph-rgb: 146 171 219;
 }
 
-.practice[data-phase='pump'] {
+[data-phase='pump'] {
   --ph: var(--c-pump);
   --ph-rgb: 227 144 90;
+}
+
+[data-phase='rest'],
+[data-phase='prep'],
+[data-phase='interlude'] {
+  --ph: var(--c-rest);
+  --ph-rgb: 185 167 143;
 }
 
 .pr-sky {
@@ -2315,89 +2516,27 @@ input[type='range']::-moz-range-thumb {
 
 .orb {
   --lvl: 0.32;
-  --size: min(78vw, 50vh, 460px);
+  --size: min(76vw, 46vh, 440px);
   position: relative;
   width: var(--size);
   height: var(--size);
   flex: none;
-  transform: translateY(calc((0.5 - var(--lvl)) * 2.4vh));
 }
 
 .orb-halo {
   position: absolute;
-  inset: -34%;
+  inset: -30%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, transparent 30%, rgb(var(--ph-rgb) / 0.28) 52%, rgb(var(--ph-rgb) / 0.08) 74%, transparent 100%);
-  transform: scale(calc(0.5 + var(--lvl) * 0.55));
-  opacity: calc(0.35 + var(--lvl) * 0.65);
+  background: radial-gradient(closest-side, rgba(244, 171, 98, 0.22), rgba(244, 171, 98, 0.07) 55%, transparent 100%);
+  transform: scale(calc(0.6 + var(--lvl) * 0.5));
+  opacity: calc(0.4 + var(--lvl) * 0.6);
 }
 
-.orb-art {
+.orb-fig {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
-}
-
-.orb-art .ph-stroke {
-  stroke: var(--ph);
-  transition: stroke 1.2s var(--ease);
-}
-
-.orb-art .ph-fill {
-  fill: var(--ph);
-  transition: fill 1.2s var(--ease);
-}
-
-.orb-art .core-a {
-  stop-color: var(--ph);
-  stop-opacity: 0.05;
-}
-
-.orb-art .core-b {
-  stop-color: var(--ph);
-  stop-opacity: 0.16;
-}
-
-.orb-art .core-c {
-  stop-color: var(--ph);
-  stop-opacity: 0.55;
-}
-
-.orb-art .core-d {
-  stop-color: var(--ph);
-  stop-opacity: 0;
-}
-
-.orb-outer {
-  transform: scale(calc(0.86 + var(--lvl) * 0.14));
-}
-
-.orb-outer-spin {
-  animation: spin 220s linear infinite reverse;
-}
-
-.orb-petals {
-  transform: scale(calc(0.42 + var(--lvl) * 0.62)) rotate(calc(var(--lvl) * 28deg));
-}
-
-.orb-petals ellipse {
-  fill: rgb(var(--ph-rgb) / 0.07);
-  stroke: rgb(var(--ph-rgb) / 0.5);
-  stroke-width: 0.5;
-}
-
-.orb-star {
-  transform: scale(calc(0.6 + var(--lvl) * 0.4));
-}
-
-.orb-star-spin {
-  animation: spin 160s linear infinite;
-}
-
-.orb-core {
-  transform: scale(calc(0.58 + var(--lvl) * 0.42));
 }
 
 .orb-ring {
@@ -2427,34 +2566,19 @@ input[type='range']::-moz-range-thumb {
   filter: drop-shadow(0 0 3px rgb(var(--ph-rgb) / 0.8));
 }
 
-.orb-text::before {
-  content: '';
-  position: absolute;
-  inset: 22%;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(17, 14, 26, 0.62), rgba(17, 14, 26, 0.3) 60%, transparent);
-}
-
-.orb-text {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  isolation: isolate;
+.orb-caption {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  pointer-events: none;
-  transform: translateY(calc((var(--lvl) - 0.5) * 2.4vh));
+  margin-top: clamp(10px, 2.2vh, 22px);
 }
 
 .cue {
   margin: 0;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(1.9rem, 6vw, 3rem);
+  font-size: clamp(1.8rem, 5.4vw, 2.7rem);
   line-height: 1.05;
   color: var(--cream);
   text-shadow: 0 2px 30px rgba(17, 14, 26, 0.85);
@@ -2479,7 +2603,7 @@ input[type='range']::-moz-range-thumb {
 }
 
 .count {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   min-height: 1.4em;
   font-family: var(--sans);
   font-weight: 300;
@@ -2491,7 +2615,7 @@ input[type='range']::-moz-range-thumb {
 }
 
 .hint {
-  margin: clamp(14px, 3vh, 30px) 0 0;
+  margin: clamp(6px, 1.4vh, 14px) 0 0;
   max-width: 30em;
   min-height: 1.6em;
   text-align: center;
@@ -2557,15 +2681,23 @@ input[type='range']::-moz-range-thumb {
 }
 
 .done-mark {
-  color: var(--saffron);
-  margin-bottom: 18px;
+  margin-bottom: 6px;
 }
 
-.done-mark svg {
-  width: 64px;
-  height: 64px;
-  stroke-width: 2.5;
-  animation: spin 30s linear infinite;
+.done-fig {
+  width: 180px;
+  height: 180px;
+  animation: idleBreath 9s ease-in-out infinite;
+}
+
+@keyframes idleBreath {
+  0%,
+  100% {
+    --lvl: 0.2;
+  }
+  50% {
+    --lvl: 0.9;
+  }
 }
 
 .done-title {
@@ -2672,11 +2804,6 @@ input[type='range']::-moz-range-thumb {
   display: block;
 }
 
-.practice.is-paused .orb-star-spin,
-.practice.is-paused .orb-outer-spin {
-  animation-play-state: paused;
-}
-
 /* =========================================================
    Responsive
    ========================================================= */
@@ -2705,7 +2832,7 @@ input[type='range']::-moz-range-thumb {
     gap: 24px;
     align-items: center;
   }
-  .ch-emblem {
+  .ch-figure {
     margin: 0;
   }
   .lab {
@@ -2732,8 +2859,8 @@ input[type='range']::-moz-range-thumb {
   .ch-visual {
     grid-template-columns: 1fr;
   }
-  .ch-emblem {
-    width: 200px;
+  .ch-figure {
+    width: min(78%, 280px);
     margin: 0 auto;
   }
   .benefits {

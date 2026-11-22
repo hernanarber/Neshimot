@@ -1,5 +1,5 @@
-// Ruach service worker — network-first, so updates always arrive; cache is the offline fallback.
-const CACHE = 'ruach-v1';
+// Neshimot service worker — network-first, so updates always arrive; cache is the offline fallback.
+const CACHE = 'neshimot-v1';
 const CORE = ['/', '/css/styles.css', '/js/app.js', '/js/data.js', '/js/audio.js', '/js/session.js', '/icon.svg'];
 
 self.addEventListener('install', (e) => {

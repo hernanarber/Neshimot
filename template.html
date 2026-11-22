@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Ruach — Daily Breathing Practice</title>
+  <title>Neshimot — Daily Breathing Practice</title>
   <meta name="description" content="<!--@count--> guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
   <meta name="theme-color" content="#110E1A" />
   <meta name="color-scheme" content="dark" />
@@ -14,21 +14,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Ruach — Daily Breathing Practice" />
+  <meta property="og:title" content="Neshimot — Daily Breathing Practice" />
   <meta property="og:description" content="Guided breathing exercises with a living breath timer and gentle sound." />
   <meta property="og:image" content="/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D8%B1%D9%8F%D9%88%D8%AD%D7%A8%D7%95%D6%BC%D7%97%D6%B7&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA&display=swap" />
   <link rel="stylesheet" href="/css/styles.css?v=<!--@version-->" />
 </head>
 <body>
   <a class="skip" href="#practices">Skip to the practices</a>
 
   <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="Ruach — home"><!--@star--><span>Ruach</span></a>
+    <a class="brand" href="#top" aria-label="Neshimot — home"><!--@star--><span>Neshimot</span></a>
     <nav class="nav-links" aria-label="Sections">
       <a href="#practices">Practices</a>
       <a href="#ritual">Daily ritual</a>
@@ -63,9 +63,9 @@
       </svg>
       <div class="hero-inner">
         <p class="eyebrow hero-eyebrow">Daily breath practice</p>
-        <h1 id="hero-title" class="hero-title">Ruach</h1>
-        <p class="hero-scripts" aria-label="Ruach in Hebrew and Rūḥ in Arabic"><span lang="he" dir="rtl">רוּחַ</span><i></i><span lang="ar" dir="rtl">رُوح</span></p>
-        <p class="hero-sub">In Hebrew and Arabic one word means both <em>breath</em> and <em>spirit</em>. <!--@countword--> guided practices, a living breath timer and the stillness of the desert — a few quiet minutes, every day.</p>
+        <h1 id="hero-title" class="hero-title">Neshimot</h1>
+        <p class="hero-scripts" aria-label="Neshimot in Hebrew, and its Arabic cousin nasīm"><span lang="he" dir="rtl">נשימות</span><i></i><span lang="ar" dir="rtl">نسيم</span></p>
+        <p class="hero-sub">Hebrew for <em>breaths</em> — from the same ancient root as <em>neshamah</em>, the soul, and the Arabic <em>nasīm</em>, a gentle breeze. <!--@countword--> guided practices and a living breath timer — a few quiet minutes, every day.</p>
         <div class="hero-cta">
           <a class="btn btn-primary" href="#practices">Explore the practices</a>
           <button class="btn btn-ghost" type="button" data-begin="physiological-sigh" data-minutes="1">
@@ -200,7 +200,7 @@
 
   <footer class="footer">
     <div class="wrap footer-inner">
-      <a class="brand" href="#top"><!--@star--><span>Ruach</span></a>
+      <a class="brand" href="#top"><!--@star--><span>Neshimot</span></a>
       <p class="footer-line">Breathe in. Breathe out. Return tomorrow.</p>
       <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser.</p>
     </div>
@@ -263,26 +263,15 @@
     <section class="pr-stage" id="pr-stage" aria-label="Breath guide">
       <div class="orb" id="orb">
         <div class="orb-halo"></div>
-        <svg class="orb-art" viewBox="-100 -100 200 200" aria-hidden="true">
-          <defs>
-            <radialGradient id="core"><stop class="core-a" offset="0"/><stop class="core-b" offset=".72"/><stop class="core-c" offset=".93"/><stop class="core-d" offset="1"/></radialGradient>
-          </defs>
-          <g class="orb-outer"><g class="orb-outer-spin"><circle class="ph-stroke" r="96" fill="none" stroke-opacity=".3" stroke-width=".6" stroke-dasharray="1 5"/></g></g>
-          <g class="orb-petals" id="petals"></g>
-          <g class="orb-star"><g class="orb-star-spin">
-            <rect class="ph-stroke" x="-52" y="-52" width="104" height="104" fill="none" stroke-opacity=".5" stroke-width=".7"/>
-            <rect class="ph-stroke" x="-52" y="-52" width="104" height="104" fill="none" stroke-opacity=".5" stroke-width=".7" transform="rotate(45)"/>
-          </g></g>
-          <g class="orb-core"><circle r="44" fill="url(#core)"/><circle class="ph-stroke" r="44" fill="none" stroke-opacity=".55" stroke-width=".6"/></g>
-        </svg>
+        <!--@figure-->
         <svg class="orb-ring" viewBox="0 0 100 100" aria-hidden="true">
           <circle class="ring-track" cx="50" cy="50" r="49"/>
           <circle class="ring-prog" id="ring" cx="50" cy="50" r="49"/>
         </svg>
-        <div class="orb-text">
-          <p class="cue" id="cue">Get ready</p>
-          <p class="count" id="count"></p>
-        </div>
+      </div>
+      <div class="orb-caption">
+        <p class="cue" id="cue">Get ready</p>
+        <p class="count" id="count"></p>
       </div>
       <p class="hint" id="hint"></p>
       <div class="nostrils" id="nostrils" hidden aria-hidden="true">
@@ -293,7 +282,7 @@
 
     <!-- done -->
     <section class="pr-done" id="pr-done" aria-label="Session complete">
-      <div class="done-mark"><!--@star--></div>
+      <div class="done-mark"><!--@figuredone--></div>
       <h3 class="done-title">Well breathed.</h3>
       <p class="done-sub" id="done-sub"></p>
       <p class="done-note">Sit for a few more breaths and notice how you feel.</p>
