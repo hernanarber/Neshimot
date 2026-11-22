@@ -29,4 +29,4 @@ and a Middle Eastern desert theme. Installable as a PWA and usable offline after
 node build.mjs && python3 -m http.server 8080
 ```
 
-Deployed on Vercel as a static site (project root: `breathing-exercises/`, no build step).
+Live at https://www.neshimot.live — deployed on Vercel as a static site (project root: `breathing-exercises/`, no build step).
