@@ -32,6 +32,7 @@ async function hs(path, token, init = {}) {
   const res = await fetch(`${API}${path}`, {
     ...init,
     headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json', ...(init.headers || {}) },
+    signal: AbortSignal.timeout(8000), // never hang on a slow HubSpot; the browser queues and retries
   });
   let data = null;
   try {

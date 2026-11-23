@@ -340,7 +340,10 @@ function checkGate() {
 
 /** 'ok' | 'bad-name' | 'bad-email' | 'retry' */
 async function postLead(lead) {
-  const r = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(lead) });
+  // a slow CRM must never keep someone from breathing: after 8 s they go in and the sign-up is retried later
+  const ctrl = 'AbortController' in window ? new AbortController() : null;
+  const timer = ctrl && setTimeout(() => ctrl.abort(), 8000);
+  const r = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(lead), signal: ctrl ? ctrl.signal : undefined }).finally(() => clearTimeout(timer));
   if (r.ok) return 'ok';
   if (r.status === 400) {
     const d = await r.json().catch(() => ({}));

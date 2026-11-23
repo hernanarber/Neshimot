@@ -182,6 +182,8 @@ const EN = {
   'footer.fine': 'For wellbeing and education — not medical advice. Sound is generated live in your browser.',
   'footer.privacy': 'Privacy',
   'privacy.href': '/privacy',
+  'powered.text': 'Powered by <b>ArberTech</b>',
+  'powered.aria': 'Powered by ArberTech — opens arbertech.com in a new tab',
 
   'pr.item': 'Practice',
   'pr.title': 'Breathe',
@@ -455,6 +457,8 @@ const HE = {
   'footer.fine': 'לרווחה ולהעשרה — לא ייעוץ רפואי. הצליל נוצר בזמן אמת בדפדפן שלכם.',
   'footer.privacy': 'פרטיות',
   'privacy.href': '/he/privacy',
+  'powered.text': 'מופעל על ידי <b>ArberTech</b>',
+  'powered.aria': 'מופעל על ידי ArberTech — האתר arbertech.com נפתח בכרטיסייה חדשה',
 
   'pr.item': 'תרגול',
   'pr.title': 'נשימה',
