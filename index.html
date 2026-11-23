@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Neshimot — Daily Breathing Practice</title>
-  <meta name="description" content="10 guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
   <meta name="theme-color" content="#110E1A" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
+  <script>(function(){var r=document.documentElement;r.classList.add('js');var th=null;try{th=JSON.parse(localStorage.getItem('neshimot.theme'))}catch(e){}if(th!=='light'&&th!=='dark'){th=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';r.dataset.themeAuto='1'}r.dataset.theme=th;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=th==='light'?'#F7EFE3':'#110E1A';try{if(location.pathname==='/'||location.pathname==='/index.html'){var l=null;try{l=JSON.parse(localStorage.getItem('neshimot.lang'))}catch(e){}if(!l){var n=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(/^(he|iw)\b/i.test(n))l='he'}if(l==='he')location.replace('/he'+location.search+location.hash)}}catch(e){}})();</script>
+  <title>Neshimot — Daily Breathing Practice</title>
+  <meta name="description" content="Ten guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
@@ -18,23 +18,33 @@
   <meta property="og:description" content="Guided breathing exercises with a living breath timer and gentle sound." />
   <meta property="og:url" content="https://www.neshimot.live/" />
   <meta property="og:site_name" content="Neshimot" />
+  <meta property="og:locale" content="en_US" />
   <meta property="og:image" content="https://www.neshimot.live/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://www.neshimot.live/og.png" />
   <link rel="canonical" href="https://www.neshimot.live/" />
+  <link rel="alternate" hreflang="en" href="https://www.neshimot.live/" />
+  <link rel="alternate" hreflang="he" href="https://www.neshimot.live/he" />
+  <link rel="alternate" hreflang="x-default" href="https://www.neshimot.live/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA&display=swap" />
-  <link rel="stylesheet" href="/css/styles.css?v=4fa3258d" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA%D7%A2%D7%91&display=swap" />
+  <link rel="stylesheet" href="/css/styles.css?v=3cee59b4" />
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <a class="skip" href="#practices">Skip to the practices</a>
+  <div class="scenery" id="scenery" aria-hidden="true"></div>
 
   <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="Neshimot — home"><svg class="mark" width="22" height="22" viewBox="-50 -50 100 100" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4"><rect x="-30" y="-30" width="60" height="60"/><rect x="-30" y="-30" width="60" height="60" transform="rotate(45)"/><circle r="11" fill="currentColor" stroke="none"/></svg><span>Neshimot</span></a>
+    <div class="nav-brands">
+      <a class="brand" href="#top" aria-label="Neshimot — home"><svg class="mark" width="22" height="22" viewBox="-50 -50 100 100" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4"><rect x="-30" y="-30" width="60" height="60"/><rect x="-30" y="-30" width="60" height="60" transform="rotate(45)"/><circle r="11" fill="currentColor" stroke="none"/></svg><span>Neshimot</span></a>
+      <a class="bti-badge" href="https://www.breath-therapy.com/en-us/about-us" target="_blank" rel="noopener" aria-label="Breath Therapy Institute — Nimrod Kaufman (opens in a new tab)" title="Based on the method of Nimrod Kaufman · Breath Therapy Institute"><span class="bti-mark"></span></a>
+    </div>
     <nav class="nav-links" aria-label="Sections">
       <a href="#practices">Practices</a>
       <a href="#ritual">Daily ritual</a>
@@ -42,7 +52,17 @@
       <a href="#progress">Your practice</a>
       <a href="#safety">Safety</a>
     </nav>
-    <button class="nav-cta" type="button" data-begin="coherent">Breathe now</button>
+    <div class="nav-tools" role="group" aria-label="Display settings">
+      <a class="lang-switch" href="/he" hreflang="he" lang="he" data-lang-to="he" aria-label="עברית — Switch to Hebrew"><span class="ls-opt" data-l="en">EN</span><span class="ls-opt" data-l="he" lang="he">עב</span><i class="ls-thumb" aria-hidden="true"></i></a>
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to light mode" data-label-light="Switch to light mode" data-label-dark="Switch to dark mode">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <defs><mask id="tt-mask"><rect width="24" height="24" fill="#fff"/><circle class="tt-bite" cx="17.5" cy="6.5" r="7" fill="#000"/></mask></defs>
+          <g class="tt-rays" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 1.6v2.6M12 19.8v2.6M1.6 12h2.6M19.8 12h2.6M4.65 4.65l1.84 1.84M17.51 17.51l1.84 1.84M4.65 19.35l1.84-1.84M17.51 6.49l1.84-1.84"/></g>
+          <circle class="tt-core" cx="12" cy="12" r="5" fill="currentColor" mask="url(#tt-mask)"/>
+        </svg>
+      </button>
+    </div>
+    <button class="nav-cta" type="button" data-begin="coherent" aria-label="Breathe now"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><span>Breathe now</span></button>
   </header>
 
   <main id="top">
@@ -51,16 +71,17 @@
       <div class="sky" aria-hidden="true">
         <div class="stars" id="stars"></div>
         <div class="shooting"></div>
-        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z" fill="#F4E6C8"/></svg>
+        <div class="clouds"><i></i><i></i><i></i><i></i></div>
+        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z"/></svg>
       </div>
       <div class="sun" aria-hidden="true"><div class="sun-glow"></div><div class="sun-disc"></div></div>
       <svg class="dunes" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <defs>
-          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A4B52"/><stop offset="1" stop-color="#5A3044"/></linearGradient>
-          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E3245"/><stop offset="1" stop-color="#3A2337"/></linearGradient>
-          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2336"/><stop offset="1" stop-color="#231A2C"/></linearGradient>
-          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E1726"/><stop offset="1" stop-color="#110E1A"/></linearGradient>
-          <linearGradient id="ridge" x1="0" x2="1"><stop offset="0" stop-color="#EBC07E" stop-opacity="0"/><stop offset=".45" stop-color="#EBC07E" stop-opacity=".55"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></linearGradient>
+          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop class="d1a" offset="0"/><stop class="d1b" offset="1"/></linearGradient>
+          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop class="d2a" offset="0"/><stop class="d2b" offset="1"/></linearGradient>
+          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop class="d3a" offset="0"/><stop class="d3b" offset="1"/></linearGradient>
+          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop class="d4a" offset="0"/><stop class="d4b" offset="1"/></linearGradient>
+          <linearGradient id="ridge" x1="0" x2="1"><stop class="rg" offset="0" stop-opacity="0"/><stop class="rg" offset=".45" stop-opacity=".55"/><stop class="rg" offset="1" stop-opacity="0"/></linearGradient>
         </defs>
         <g class="dune" data-depth="0.08"><path d="M0,560 C180,500 320,470 520,500 C700,527 820,470 1000,455 C1180,440 1320,490 1440,470 L1440,800 L0,800Z" fill="url(#d1)"/><path d="M380,486 C460,480 500,490 560,503 C700,527 820,470 1000,455" fill="none" stroke="url(#ridge)" stroke-width="1.5"/></g>
         <g class="dune" data-depth="0.16"><path d="M0,625 C200,565 380,605 560,590 C760,573 860,525 1060,545 C1240,563 1340,605 1440,585 L1440,800 L0,800Z" fill="url(#d2)"/><path d="M700,575 C800,560 880,525 1060,545 C1160,555 1240,570 1300,585" fill="none" stroke="url(#ridge)" stroke-width="1.2" opacity=".7"/></g>
@@ -295,7 +316,7 @@
     </section>
 
     <!-- ============ CHAPTERS ============ -->
-    <section class="chapters" aria-label="Practice guides">
+    <section class="chapters" id="chapters" aria-label="Practice guides">
       <div class="wrap">
   <article class="chapter" id="ex-diaphragmatic" style="--cat:var(--cat-foundation)">
     <div class="ch-visual reveal" data-phase="in">
@@ -747,7 +768,7 @@
     </div>
     <div class="ch-body reveal">
       <p class="ch-num">07<span> / 10</span></p>
-      <p class="meta"><span class="dot"></span>Calm · Beginner · 4 cycles · ~76s</p>
+      <p class="meta"><span class="dot"></span>Calm · Beginner · 4 cycles · ~76 s</p>
       <h3 class="ch-title">4-7-8 Breathing</h3>
       <p class="ch-alt">The relaxing breath</p>
       <p class="ch-summary">Popularised by Dr. Andrew Weil from yogic pranayama, the 4-7-8 breath pairs a short inhale with a long hold and an even longer, audible exhale. It is a trusted tool for falling asleep, easing anxiety and interrupting cravings or anger.</p>
@@ -982,8 +1003,8 @@
     <svg class="sun-arc" viewBox="0 0 240 120" aria-hidden="true">
     <defs><radialGradient id="sg-sunrise"><stop offset="0" stop-color="#EBC07E" stop-opacity=".9"/><stop offset=".35" stop-color="#EBC07E" stop-opacity=".35"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></radialGradient></defs>
     <path d="M48,100 A72,72 0 0 1 192,100" fill="none" stroke="rgba(235,192,126,.3)" stroke-dasharray="2 5"/>
-    <path d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z" fill="#3A2337"/>
-    <path d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z" fill="#231A2C"/>
+    <path class="sa-d1" d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z"/>
+    <path class="sa-d2" d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z"/>
     <circle cx="53.1" cy="73.5" r="30" fill="url(#sg-sunrise)"/>
     <circle cx="53.1" cy="73.5" r="8" fill="#EBC07E"/>
   </svg>
@@ -995,15 +1016,15 @@
     </ol>
     <div class="ritual-foot">
       <span class="ritual-total">≈ 7 min</span>
-      <button class="btn btn-ghost" type="button" data-ritual="sunrise">Begin sunrise ritual</button>
+      <button class="btn btn-ghost" type="button" data-ritual="sunrise">Begin Sunrise ritual</button>
     </div>
   </article>
   <article class="ritual reveal" data-ritual-card="zenith">
     <svg class="sun-arc" viewBox="0 0 240 120" aria-hidden="true">
     <defs><radialGradient id="sg-zenith"><stop offset="0" stop-color="#FFE7B8" stop-opacity=".9"/><stop offset=".35" stop-color="#FFE7B8" stop-opacity=".35"/><stop offset="1" stop-color="#FFE7B8" stop-opacity="0"/></radialGradient></defs>
     <path d="M48,100 A72,72 0 0 1 192,100" fill="none" stroke="rgba(235,192,126,.3)" stroke-dasharray="2 5"/>
-    <path d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z" fill="#3A2337"/>
-    <path d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z" fill="#231A2C"/>
+    <path class="sa-d1" d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z"/>
+    <path class="sa-d2" d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z"/>
     <circle cx="120.0" cy="28.0" r="30" fill="url(#sg-zenith)"/>
     <circle cx="120.0" cy="28.0" r="8" fill="#FFE7B8"/>
   </svg>
@@ -1015,15 +1036,15 @@
     </ol>
     <div class="ritual-foot">
       <span class="ritual-total">≈ 6 min</span>
-      <button class="btn btn-ghost" type="button" data-ritual="zenith">Begin midday ritual</button>
+      <button class="btn btn-ghost" type="button" data-ritual="zenith">Begin Midday ritual</button>
     </div>
   </article>
   <article class="ritual reveal" data-ritual-card="sunset">
     <svg class="sun-arc" viewBox="0 0 240 120" aria-hidden="true">
     <defs><radialGradient id="sg-sunset"><stop offset="0" stop-color="#E3905A" stop-opacity=".9"/><stop offset=".35" stop-color="#E3905A" stop-opacity=".35"/><stop offset="1" stop-color="#E3905A" stop-opacity="0"/></radialGradient></defs>
     <path d="M48,100 A72,72 0 0 1 192,100" fill="none" stroke="rgba(235,192,126,.3)" stroke-dasharray="2 5"/>
-    <path d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z" fill="#3A2337"/>
-    <path d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z" fill="#231A2C"/>
+    <path class="sa-d1" d="M0,100 C40,92 70,96 100,94 C140,91 180,98 240,93 L240,120 L0,120Z"/>
+    <path class="sa-d2" d="M0,108 C60,102 120,110 240,104 L240,120 L0,120Z"/>
     <circle cx="186.9" cy="73.5" r="30" fill="url(#sg-sunset)"/>
     <circle cx="186.9" cy="73.5" r="8" fill="#E3905A"/>
   </svg>
@@ -1035,7 +1056,7 @@
     </ol>
     <div class="ritual-foot">
       <span class="ritual-total">≈ 8 min</span>
-      <button class="btn btn-ghost" type="button" data-ritual="sunset">Begin sunset ritual</button>
+      <button class="btn btn-ghost" type="button" data-ritual="sunset">Begin Sunset ritual</button>
     </div>
   </article></div>
       </div>
@@ -1141,7 +1162,7 @@
           </div>
           <div class="diary-locked" id="diary-locked" hidden>
             <p>Sign up free to keep a breathing diary and follow your progress.</p>
-            <button class="btn btn-primary" type="button" id="diary-unlock">Unlock — it's free</button>
+            <button class="btn btn-primary" type="button" id="diary-unlock">Unlock — it’s free</button>
           </div>
           <form class="diary-compose" id="diary-compose" hidden>
             <label class="field"><span>Practice</span><select id="dc-practice"></select></label>
@@ -1174,7 +1195,11 @@
     <div class="wrap footer-inner">
       <a class="brand" href="#top"><svg class="mark" width="22" height="22" viewBox="-50 -50 100 100" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4"><rect x="-30" y="-30" width="60" height="60"/><rect x="-30" y="-30" width="60" height="60" transform="rotate(45)"/><circle r="11" fill="currentColor" stroke="none"/></svg><span>Neshimot</span></a>
       <p class="footer-line">Breathe in. Breathe out. Return tomorrow.</p>
-      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser. · <a href="/privacy">Privacy</a></p>
+      <div class="credit">
+        <a class="credit-logo" href="https://www.breath-therapy.com/en-us/about-us" target="_blank" rel="noopener" aria-label="Breath Therapy Institute — Nimrod Kaufman (opens in a new tab)"><span class="bti-logo"></span></a>
+        <p class="credit-text">The practices on Neshimot are based on the daily breathing work of Nimrod Kaufman and the <a href="https://www.breath-therapy.com/en-us/about-us" target="_blank" rel="noopener">Breath Therapy Institute</a>. For personal breathing sessions, workshops and breath-therapist training, visit <a href="https://www.breath-therapy.com/en-us/about-us" target="_blank" rel="noopener">breath-therapy.com</a>.</p>
+      </div>
+      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser. · <a href="/privacy">Privacy</a> · <a href="/he" hreflang="he" lang="he" data-lang-to="he">עברית</a></p>
     </div>
   </footer>
 
@@ -1183,9 +1208,9 @@
     <div class="pr-sky" aria-hidden="true"><div class="stars" id="pr-stars"></div></div>
     <canvas class="pr-sand" id="sand" aria-hidden="true"></canvas>
     <svg class="pr-dunes" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <path d="M0,150 C200,100 380,130 560,118 C760,104 880,70 1080,88 C1240,102 1340,130 1440,118 L1440,300 L0,300Z" fill="#2A1D30" opacity=".85"/>
-      <path d="M0,215 C240,178 460,200 700,190 C940,180 1180,160 1440,182 L1440,300 L0,300Z" fill="#1A1422"/>
-      <path d="M0,265 C300,240 620,258 900,250 C1140,243 1300,232 1440,240 L1440,300 L0,300Z" fill="#110E1A"/>
+      <path class="pd1" d="M0,150 C200,100 380,130 560,118 C760,104 880,70 1080,88 C1240,102 1340,130 1440,118 L1440,300 L0,300Z"/>
+      <path class="pd2" d="M0,215 C240,178 460,200 700,190 C940,180 1180,160 1440,182 L1440,300 L0,300Z"/>
+      <path class="pd3" d="M0,265 C300,240 620,258 900,250 C1140,243 1300,232 1440,240 L1440,300 L0,300Z"/>
     </svg>
 
     <header class="pr-top">
@@ -1221,12 +1246,12 @@
         <div class="setup-caution" id="su-caution" hidden>
           <p><strong>Before you begin</strong><span id="su-caution-text"></span></p>
           <a class="link-btn" id="su-caution-link" href="#safety">Read the full safety notes</a>
-          <label class="ack" id="su-ack-row" hidden><input type="checkbox" id="su-ack" /> <span>I've read the safety notes and this practice is right for me</span></label>
+          <label class="ack" id="su-ack-row" hidden><input type="checkbox" id="su-ack" /> <span>I’ve read the safety notes and this practice is right for me</span></label>
         </div>
         <div class="toggles">
           <button class="toggle" type="button" data-pref="sound" aria-pressed="true"><span class="tg"></span>Breath tones</button>
           <button class="toggle" type="button" data-pref="wind" aria-pressed="false"><span class="tg"></span>Desert wind</button>
-          <button class="toggle" type="button" data-pref="voice" aria-pressed="false"><span class="tg"></span>Voice cues</button>
+          <button class="toggle" type="button" data-pref="voice" aria-pressed="false" id="tg-voice"><span class="tg"></span>Voice cues</button>
           <button class="toggle" type="button" data-pref="haptic" aria-pressed="true" id="tg-haptic"><span class="tg"></span>Vibration</button>
         </div>
         <div class="setup-actions">
@@ -1246,7 +1271,7 @@
         <p class="gate-sub" id="gate-sub">Your first session was on us. Leave your name and email to keep practising — every practice and every ritual, free.</p>
         <form id="gate-form" novalidate>
           <label class="field"><span>Name</span><input id="g-name" name="name" type="text" autocomplete="name" maxlength="100" required /></label>
-          <label class="field"><span>Email</span><input id="g-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required /></label>
+          <label class="field"><span>Email</span><input id="g-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required dir="ltr" /></label>
           <div class="hp" aria-hidden="true"><label>Website<input name="website" id="g-website" type="text" tabindex="-1" autocomplete="off" /></label></div>
           <label class="ack gate-consent"><input type="checkbox" id="g-consent" /> <span>Send me occasional breathing tips and updates. Unsubscribe any time.</span></label>
           <p class="gate-error" id="g-error" role="alert"></p>
@@ -1332,7 +1357,7 @@
       <p class="done-sub" id="done-sub"></p>
       <p class="done-streak" id="done-streak"></p>
       <div class="done-unlock" id="done-unlock" hidden>
-        <p>Enjoyed it? Unlock all ten practices — it's free.</p>
+        <p>Enjoyed it? Unlock all ten practices — it’s free.</p>
         <button class="btn btn-ghost" type="button" id="done-unlock-btn">Unlock all practices</button>
       </div>
       <div class="mood" id="mood" role="group" aria-labelledby="mood-q">
@@ -1359,7 +1384,7 @@
       <div class="pr-progress" aria-hidden="true"><div class="pr-progress-fill" id="prog"></div><div class="pr-ticks" id="pr-ticks"></div></div>
       <div class="pr-controls">
         <span class="pr-time" id="t-el">0:00</span>
-        <button class="icon-btn" type="button" id="btn-sound" aria-label="Mute tones" aria-pressed="false">
+        <button class="icon-btn" type="button" id="btn-sound" aria-label="Mute sound" aria-pressed="false">
           <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
@@ -1386,6 +1411,6 @@
     <div class="sr-only" aria-live="polite" id="pr-live"></div>
   </div>
 
-  <script type="module" src="/js/app.js?v=4fa3258d"></script>
+  <script type="module" src="/js/app.js?v=3cee59b4"></script>
 </body>
 </html>

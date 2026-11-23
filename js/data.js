@@ -5,6 +5,9 @@
 // say: spoken wording for voice cues when it differs from the on-screen cue.
 // prep: custom 'get ready' cue; doseNote: guidance under the duration picker;
 // cautionShort: one-line safety note shown before starting; ack: needs a one-time safety acknowledgement.
+// The Hebrew text lives in data.he.js; setDataLang('he' | 'en') swaps every text field in place.
+
+import { HE } from './data.he.js';
 
 export const CATEGORIES = {
   Foundation: { color: 'var(--cat-foundation)', blurb: 'Rebuild a natural, efficient breath.' },
@@ -270,7 +273,7 @@ export const EXERCISES = [
     roundLabel: 'Breath',
     pattern: [
       { t: 'in', s: 4, cue: 'Breathe in', hint: 'Through the nose' },
-      { t: 'out', s: 8, cue: 'Hum', hint: 'A low, steady “mmm” — feel the vibration' },
+      { t: 'out', s: 8, hum: true, cue: 'Hum', hint: 'A low, steady “mmm” — feel the vibration' },
     ],
     summary:
       'On every long exhale you hum a low, steady “mmm”, like a bee. The sound lengthens the exhale naturally, the vibration resonates through the face, throat and chest, and the mind is given something soothing to rest on. Sound and breath have been paired for healing in many traditions.',
@@ -478,3 +481,74 @@ export function roundsFor(ex, dose, pace = 1) {
 }
 
 export const byId = (id) => EXERCISES.find((e) => e.id === id);
+
+// ---------- Language ----------
+
+const TEXT = ['name', 'alt', 'tagline', 'patternLabel', 'roundLabel', 'roundPlural', 'summary', 'steps', 'benefits', 'science', 'tips', 'caution', 'cautionShort', 'doseNote'];
+const pick = (o, keys) => Object.fromEntries(keys.filter((k) => o[k] != null).map((k) => [k, o[k]]));
+const phaseText = (pattern) =>
+  pattern.map((p) => (p.repeat ? { counter: p.counter, phases: phaseText(p.phases) } : pick(p, ['cue', 'hint', 'say'])));
+
+EXERCISES.forEach((ex) => {
+  if (!ex.roundPlural) ex.roundPlural = ex.roundLabel === 'Box' ? 'boxes' : `${ex.roundLabel.toLowerCase()}s`;
+});
+RITUALS.forEach((r) => (r.label = `${r.name} ritual`));
+Object.entries(CATEGORIES).forEach(([k, c]) => (c.label = k));
+
+const EN = {
+  exercises: Object.fromEntries(
+    EXERCISES.map((ex) => [ex.id, { ...pick(ex, TEXT), prep: ex.prep && { ...ex.prep }, outro: ex.outro && pick(ex.outro, ['cue', 'hint']), pattern: phaseText(ex.pattern) }])
+  ),
+  rituals: Object.fromEntries(RITUALS.map((r) => [r.id, pick(r, ['name', 'label', 'title', 'blurb'])])),
+  categories: Object.fromEntries(Object.entries(CATEGORIES).map(([k, c]) => [k, pick(c, ['label', 'blurb'])])),
+  principles: PRINCIPLES.map((p) => ({ ...p })),
+  safety: [...SAFETY],
+  levels: { Beginner: 'Beginner', Intermediate: 'Intermediate', Advanced: 'Advanced' },
+  units: { cycles: 'cycles', rounds: 'rounds' },
+};
+
+function applyPattern(pattern, texts = []) {
+  pattern.forEach((p, i) => {
+    const tx = texts[i];
+    if (!tx) return;
+    if (p.repeat) {
+      if (tx.counter) p.counter = tx.counter;
+      applyPattern(p.phases, tx.phases);
+    } else {
+      p.cue = tx.cue ?? p.cue;
+      p.hint = tx.hint ?? p.hint;
+      if (tx.say) p.say = tx.say;
+      else delete p.say;
+    }
+  });
+}
+
+let DATA_LANG = 'en';
+let LEX = EN;
+
+/** Switch every exercise, ritual, principle and safety text to 'en' or 'he'. */
+export function setDataLang(lang) {
+  DATA_LANG = lang === 'he' ? 'he' : 'en';
+  const src = DATA_LANG === 'he' ? HE : EN;
+  LEX = src;
+  EXERCISES.forEach((ex) => {
+    const tx = { ...EN.exercises[ex.id], ...(src.exercises[ex.id] || {}) };
+    TEXT.forEach((k) => {
+      if (tx[k] != null) ex[k] = tx[k];
+      else delete ex[k];
+    });
+    if (ex.prep) ex.prep = { ...ex.prep, ...(tx.prep || EN.exercises[ex.id].prep) };
+    if (ex.outro) Object.assign(ex.outro, tx.outro || EN.exercises[ex.id].outro);
+    applyPattern(ex.pattern, EN.exercises[ex.id].pattern);
+    if (src !== EN) applyPattern(ex.pattern, tx.pattern);
+  });
+  RITUALS.forEach((r) => Object.assign(r, EN.rituals[r.id], src.rituals[r.id] || {}));
+  Object.entries(CATEGORIES).forEach(([k, c]) => Object.assign(c, EN.categories[k], src.categories[k] || {}));
+  PRINCIPLES.forEach((p, i) => Object.assign(p, EN.principles[i], (src.principles || [])[i] || {}));
+  SAFETY.splice(0, SAFETY.length, ...(src.safety && src.safety.length === EN.safety.length ? src.safety : EN.safety));
+}
+
+export const dataLang = () => DATA_LANG;
+export const catLabel = (c) => (CATEGORIES[c] && CATEGORIES[c].label) || c;
+export const levelLabel = (l) => (LEX.levels && LEX.levels[l]) || l;
+export const unitLabel = (u) => (LEX.units && LEX.units[u]) || u;

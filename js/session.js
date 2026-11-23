@@ -4,19 +4,20 @@
 // slightly ahead, which keeps them precise even when the tab is in the background.
 
 import { expandPattern, targetLevel, roundsFor } from './data.js';
+import { t } from './i18n.js';
 
 const LOOKAHEAD = 1.6; // seconds of audio scheduled in advance
 const TICK_MS = 60;
 
 export function buildTimeline(plan, { pace = 1, prep = 4 } = {}) {
   const tl = [];
-  let t = 0;
+  let at = 0; // running time in seconds
   let level = 0.32;
   const push = (ph) => {
     const from = level;
     const to = targetLevel(ph, level);
-    tl.push({ ...ph, start: t, end: t + ph.s, from, to });
-    t += ph.s;
+    tl.push({ ...ph, start: at, end: at + ph.s, from, to });
+    at += ph.s;
     level = to;
   };
 
@@ -25,10 +26,10 @@ export function buildTimeline(plan, { pace = 1, prep = 4 } = {}) {
     const cyc = expandPattern(ex.pattern).map((p) => ({ ...p, s: +(p.s * pace).toFixed(3) }));
     const rounds = roundsFor(ex, item, pace);
     if (idx === 0) {
-      const pr = ex.prep || { cue: 'Get ready', hint: 'Settle in · sit tall · soften the shoulders' };
+      const pr = ex.prep || { cue: t('cue.ready'), hint: t('cue.readyHint') };
       push({ t: 'prep', s: prep, cue: pr.cue, hint: pr.hint, item: idx });
     }
-    else push({ t: 'interlude', s: 8, cue: 'Next', hint: ex.name, item: idx });
+    else push({ t: 'interlude', s: 8, cue: t('cue.next'), hint: ex.name, item: idx });
     for (let r = 1; r <= rounds; r++) {
       for (const p of cyc) push({ ...p, item: idx, round: r, rounds });
     }
@@ -53,7 +54,7 @@ export function buildTimeline(plan, { pace = 1, prep = 4 } = {}) {
     else if (ph.t === 'prep' || ph.t === 'interlude') ph.sound = 'bowl-low';
   }
 
-  return { tl, total: t };
+  return { tl, total: at };
 }
 
 export class Session {

@@ -1,5 +1,6 @@
 // Neshimot — symbolic illustrations, the breathing figure and breath-pattern graphs (inline SVG).
 import { expandPattern, targetLevel } from './data.js';
+import { t } from './i18n.js';
 
 const ic = (body) =>
   `<svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body.replaceAll('class="draw"', 'class="draw" pathLength="1"')}</svg>`;
@@ -125,10 +126,10 @@ export function patternSVG(ex, { mini = false, cycles } = {}) {
       const sum = g.segs.reduce((a, s) => a + s.s, 0);
       const mid = s0.start + sum / 2;
       let text;
-      if (g.key === 'pump') text = `${s0.countTotal} pumps`;
+      if (g.key === 'pump') text = t('g.pumps', { n: s0.countTotal });
       else {
-        const verb = { in: 'In', out: s0.cue === 'Hum' ? 'Hum' : 'Out', hold: 'Hold', rest: 'Rest' }[g.key];
-        const side = s0.side ? ` ${s0.side[0].toUpperCase()}` : '';
+        const verb = t(g.key === 'out' && s0.hum ? 'g.hum' : `g.${g.key}`);
+        const side = s0.side ? ` ${t(s0.side === 'left' ? 'g.left' : 'g.right')}` : '';
         const parts = g.segs.length > 1 ? g.segs.map((s) => fmt(s.s)).join(g.segs.length > 2 ? '·' : '+') : fmt(sum);
         text = `${verb}${side} ${parts}`;
       }
@@ -136,15 +137,15 @@ export function patternSVG(ex, { mini = false, cycles } = {}) {
       ticks += `<line class="pg-sep" x1="${x(s0.start).toFixed(1)}" x2="${x(s0.start).toFixed(1)}" y1="32" y2="${H - pb}"/>`;
     }
     ticks += `<line class="pg-base" x1="${pl}" x2="${W - pr}" y1="${y(0)}" y2="${y(0)}"/>`;
-    ticks += `<text class="pg-axis" x="${pl}" y="${H - 10}">0s</text><text class="pg-axis" x="${W - pr}" y="${H - 10}" text-anchor="end">${fmt(total)}s</text>`;
-    if (n > 1) ticks += `<text class="pg-axis" x="${x(total / 2)}" y="${H - 10}" text-anchor="middle">${fmt(total / 2)}s</text>`;
+    ticks += `<text class="pg-axis" x="${pl}" y="${H - 10}">${t('g.sec', { n: 0 })}</text><text class="pg-axis" x="${W - pr}" y="${H - 10}" text-anchor="end">${t('g.sec', { n: fmt(total) })}</text>`;
+    if (n > 1) ticks += `<text class="pg-axis" x="${x(total / 2)}" y="${H - 10}" text-anchor="middle">${t('g.sec', { n: fmt(total / 2) })}</text>`;
   }
 
   const id = `pgf-${ex.id}-${mini ? 'm' : 'l'}`;
   // live playhead (big graphs only) — moved by the chapter figure animation, synced to its breath
   const head = mini ? '' : `<circle class="pg-head" r="6" cx="${x(0).toFixed(1)}" cy="${y(segs[0].from).toFixed(1)}"/>`;
   const geo = mini ? '' : ` data-geo="${pl},${pr},${pt},${pb},${W},${H},${total},${n}"`;
-  return `<svg class="pattern-graph ${mini ? 'is-mini' : ''}" viewBox="0 0 ${W} ${H}"${mini ? ' preserveAspectRatio="none"' : ''}${geo} role="img" aria-label="Breath pattern: ${ex.patternLabel}">
+  return `<svg class="pattern-graph ${mini ? 'is-mini' : ''}" viewBox="0 0 ${W} ${H}"${mini ? ' preserveAspectRatio="none"' : ''}${geo} role="img" aria-label="${t('g.aria', { label: ex.patternLabel })}">
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBC07E" stop-opacity=".22"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></linearGradient></defs>
     ${ticks}<path d="${fill}" fill="url(#${id})" stroke="none"/>${paths}${labels}${head}</svg>`;
 }
@@ -159,8 +160,8 @@ export function sunArcSVG(pos, id) {
   return `<svg class="sun-arc" viewBox="0 0 240 120" aria-hidden="true">
     <defs><radialGradient id="sg-${id}"><stop offset="0" stop-color="${tone}" stop-opacity=".9"/><stop offset=".35" stop-color="${tone}" stop-opacity=".35"/><stop offset="1" stop-color="${tone}" stop-opacity="0"/></radialGradient></defs>
     <path d="M${cx - r},${cy} A${r},${r} 0 0 1 ${cx + r},${cy}" fill="none" stroke="rgba(235,192,126,.3)" stroke-dasharray="2 5"/>
-    <path d="M0,${cy} C40,${cy - 8} 70,${cy - 4} 100,${cy - 6} C140,${cy - 9} 180,${cy - 2} 240,${cy - 7} L240,120 L0,120Z" fill="#3A2337"/>
-    <path d="M0,${cy + 8} C60,${cy + 2} 120,${cy + 10} 240,${cy + 4} L240,120 L0,120Z" fill="#231A2C"/>
+    <path class="sa-d1" d="M0,${cy} C40,${cy - 8} 70,${cy - 4} 100,${cy - 6} C140,${cy - 9} 180,${cy - 2} 240,${cy - 7} L240,120 L0,120Z"/>
+    <path class="sa-d2" d="M0,${cy + 8} C60,${cy + 2} 120,${cy + 10} 240,${cy + 4} L240,120 L0,120Z"/>
     <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="30" fill="url(#sg-${id})"/>
     <circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="8" fill="${tone}"/>
   </svg>`;

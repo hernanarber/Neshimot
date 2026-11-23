@@ -1,6 +1,21 @@
 // Neshimot service worker — network-first, so updates always arrive; cache is the offline fallback.
-const CACHE = 'neshimot-v1';
-const CORE = ['/', '/css/styles.css', '/js/app.js', '/js/data.js', '/js/audio.js', '/js/session.js', '/icon.svg'];
+const CACHE = 'neshimot-v2';
+const CORE = [
+  '/',
+  '/he',
+  '/css/styles.css',
+  '/js/app.js',
+  '/js/data.js',
+  '/js/data.he.js',
+  '/js/i18n.js',
+  '/js/audio.js',
+  '/js/session.js',
+  '/js/graphs.js',
+  '/js/scenery.js',
+  '/img/bti-mark.png',
+  '/img/bti-logo.png',
+  '/icon.svg',
+];
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
@@ -29,6 +44,10 @@ self.addEventListener('fetch', (e) => {
         }
         return res;
       })
-      .catch(() => caches.match(req, { ignoreSearch: sameOrigin }).then((r) => r || (req.mode === 'navigate' ? caches.match('/') : undefined)))
+      .catch(() =>
+        caches
+          .match(req, { ignoreSearch: sameOrigin })
+          .then((r) => r || (req.mode === 'navigate' ? caches.match(url.pathname.startsWith('/he') ? '/he' : '/') : undefined))
+      )
   );
 });

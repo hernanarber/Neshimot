@@ -1,7 +1,8 @@
 // Neshimot — sign-up endpoint (Vercel serverless function).
 // Saves a visitor's name and email as a HubSpot contact and files them in the
 // "Neshimot — Website sign-ups" segment (plus "Neshimot — Email opt-in" when they
-// ticked the newsletter box). No database: HubSpot is the system of record.
+// ticked the newsletter box, and "Neshimot — Hebrew site" when they signed up on /he).
+// No database: HubSpot is the system of record.
 //
 // Env: HUBSPOT_TOKEN — a HubSpot private-app token with crm.objects.contacts.read/write
 //      and crm.lists.read/write scopes. Without it, GET reports ready:false and the
@@ -11,6 +12,7 @@ const API = process.env.HUBSPOT_API_BASE || 'https://api.hubapi.com';
 const LISTS = {
   signups: 'Neshimot — Website sign-ups',
   optin: 'Neshimot — Email opt-in',
+  hebrew: 'Neshimot — Hebrew site',
 };
 const ALLOWED_ORIGIN = /^(https:\/\/(www\.)?neshimot\.live|https:\/\/(neshimot|breathing-exercises)[a-z0-9-]*\.vercel\.app|http:\/\/localhost(:\d+)?)$/;
 const EMAIL = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[a-z]{2,}$/i;
@@ -122,6 +124,14 @@ module.exports = async function handler(req, res) {
     const id = await contactId(token, email, firstname, lastname);
     await addToList(token, 'signups', id);
     if (body.consent === true) await addToList(token, 'optin', id);
+    // visitors who signed up on the Hebrew site — for Hebrew emails later; never blocks the sign-up
+    if (body.lang === 'he') {
+      try {
+        await addToList(token, 'hebrew', id);
+      } catch (err) {
+        console.error('hebrew segment error:', err && err.message);
+      }
+    }
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('lead error:', err && err.message);

@@ -1,41 +1,58 @@
 # Neshimot — Daily Breathing Practice
 
-**Live at https://www.neshimot.live**
+**Live at https://www.neshimot.live** (English) and **https://www.neshimot.live/he** (Hebrew)
 
 A website of guided daily breathing exercises ("Neshimot" — Hebrew for "breaths") with a live breath timer,
 a breathing human figure, illustrated breath-pattern graphs, generative audio (higher pad on the inhale,
 low bass on the exhale) and a Middle Eastern desert theme. Installable as a PWA and usable offline after
 the first visit.
 
-The first session is free; after that visitors leave their name and email (sent to HubSpot), which unlocks
-every practice and the breathing diary. Practice history, progress and diary notes stay on the visitor's device.
+The practices are based on the daily breathing work of Nimrod Kaufman and the
+[Breath Therapy Institute](https://www.breath-therapy.com/en-us/about-us) (המרכז לתרפיה בנשימה), credited with
+their logo in the header and the footer.
+
+- **Two languages** — English at `/`, Hebrew (right-to-left) at `/he`. The EN | עב switch remembers the choice and
+  opens the same section in the other language; visitors whose browser is set to Hebrew land on `/he`.
+- **Two themes** — night (dark) and dawn (light). The site follows the device setting until the visitor picks one.
+  Light mode shows calm, softly animated landscapes behind the page (dunes, an oasis, the crater mountains,
+  the sea, olive hills and an acacia plain) that change as you scroll.
+- **Sign-up** — the first session is free; after that visitors leave their name and email (sent to HubSpot), which
+  unlocks every practice and the breathing diary. Practice history, progress and diary notes stay on the visitor's device.
 
 ## Structure
 
 | Path | Purpose |
 | --- | --- |
-| `js/data.js` | **All exercise content** — names, steps, science, cautions and the breath patterns the timer runs. Edit here. |
+| `js/data.js` | Exercise library — breath patterns the timer runs, plus the English text. |
+| `js/data.he.js` | Hebrew text for every exercise, ritual, principle and safety note (mirrors `data.js`). |
+| `js/i18n.js` | Every other piece of interface text, in English and Hebrew. |
 | `js/session.js` | Timing engine: builds a phase timeline, runs on the system clock and schedules sound on the audio clock. |
 | `js/audio.js` | Web Audio synthesis: inhale pad, exhale bass, singing-bowl holds, frame-drum pumps, optional desert wind. |
 | `js/graphs.js` | The breathing figure, inline-SVG icons, breath-pattern graphs and sun-arc illustrations. |
+| `js/scenery.js` | The light-mode landscapes. |
 | `js/render.js` | HTML renderers used at build time. |
-| `js/app.js` | UI controller: practice overlay, sign-up, breathing diary, science chart, progress, breath-hold check. |
+| `js/app.js` | UI controller: practice overlay, sign-up, diary, science chart, progress, theme and language switches. |
 | `api/lead.js` | Vercel function: saves sign-ups to HubSpot segments. |
-| `template.html` | Page template with `<!--@marker-->` slots. |
-| `build.mjs` | Prerenders `template.html` → `index.html` from the data (no npm install needed). |
-| `privacy.html` | Privacy page (`/privacy`). |
+| `template.html` | Page template with `<!--@marker-->` slots and `<!--@t:key-->` text keys. |
+| `build.mjs` | Prerenders the template → `index.html` (English) and `he.html` (Hebrew). No npm install needed. |
+| `privacy.html`, `he/privacy.html` | Privacy page in each language (`/privacy`, `/he/privacy`). |
+| `img/` | The Breath Therapy Institute logo (transparent, recoloured per theme). |
 
-## Editing exercises
+## Editing text
 
-1. Change `js/data.js` (each phase is `{ t: 'in' | 'out' | 'hold' | 'rest', s: seconds }`).
-2. Run `node build.mjs` to regenerate `index.html`.
+1. Exercise content: English in `js/data.js`, Hebrew in `js/data.he.js`. Interface text: `js/i18n.js` (both languages side by side).
+2. Run `node build.mjs` to regenerate `index.html` and `he.html`.
 3. Commit and push — Vercel deploys `main` to production.
+
+Each breath phase in `data.js` is `{ t: 'in' | 'out' | 'hold' | 'rest', s: seconds }`; the Hebrew file lists the
+same phases in the same order, with their Hebrew cue and hint.
 
 ## Configuration
 
-| Vercel environment variable | Purpose |
+| Vercel setting | Purpose |
 | --- | --- |
-| `HUBSPOT_TOKEN` | HubSpot private-app token (scopes: `crm.objects.contacts.read/write`, `crm.lists.read/write`). Without it the sign-up step stays off and the site works as a fully open practice site. |
+| `HUBSPOT_TOKEN` (environment variable) | HubSpot private-app token (scopes: `crm.objects.contacts.read/write`, `crm.lists.read/write`). Without it the sign-up step stays off and the site works as a fully open practice site. Sign-ups go to the segments "Neshimot — Website sign-ups", "Neshimot — Email opt-in" (ticked box) and "Neshimot — Hebrew site" (signed up on `/he`). |
+| Web Analytics (project → Analytics → Enable) | Anonymous, cookie-free page-view counts. The script is already on both pages. |
 
 ## Run locally
 
@@ -43,6 +60,6 @@ every practice and the breathing diary. Practice history, progress and diary not
 node build.mjs && python3 -m http.server 8080
 ```
 
-(The sign-up function only runs on Vercel; locally the site behaves as if the sign-up is switched off.)
+(Locally, `/he` is served as `/he.html`, and the sign-up function only runs on Vercel — the site behaves as if the sign-up is switched off.)
 
 Deployed on Vercel from this repository's root: a static site plus one serverless function in `api/`, no build step.

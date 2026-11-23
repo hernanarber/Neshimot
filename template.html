@@ -1,48 +1,67 @@
 <!doctype html>
-<html lang="en">
+<html lang="<!--@lang-->" dir="<!--@dir-->" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Neshimot — Daily Breathing Practice</title>
-  <meta name="description" content="<!--@count--> guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
   <meta name="theme-color" content="#110E1A" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
+  <script><!--@boot--></script>
+  <title><!--@t:meta.title--></title>
+  <meta name="description" content="<!--@t:meta.desc-->" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Neshimot — Daily Breathing Practice" />
-  <meta property="og:description" content="Guided breathing exercises with a living breath timer and gentle sound." />
-  <meta property="og:url" content="https://www.neshimot.live/" />
-  <meta property="og:site_name" content="Neshimot" />
+  <meta property="og:title" content="<!--@t:meta.title-->" />
+  <meta property="og:description" content="<!--@t:meta.ogDesc-->" />
+  <meta property="og:url" content="<!--@url-->" />
+  <meta property="og:site_name" content="<!--@t:brand-->" />
+  <meta property="og:locale" content="<!--@t:meta.locale-->" />
   <meta property="og:image" content="https://www.neshimot.live/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://www.neshimot.live/og.png" />
-  <link rel="canonical" href="https://www.neshimot.live/" />
+  <link rel="canonical" href="<!--@url-->" />
+  <link rel="alternate" hreflang="en" href="https://www.neshimot.live/" />
+  <link rel="alternate" hreflang="he" href="https://www.neshimot.live/he" />
+  <link rel="alternate" hreflang="x-default" href="https://www.neshimot.live/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA&display=swap" />
+<!--@fonts-->
   <link rel="stylesheet" href="/css/styles.css?v=<!--@version-->" />
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-  <a class="skip" href="#practices">Skip to the practices</a>
+  <a class="skip" href="#practices"><!--@t:skip--></a>
+  <div class="scenery" id="scenery" aria-hidden="true"></div>
 
   <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="Neshimot — home"><!--@star--><span>Neshimot</span></a>
-    <nav class="nav-links" aria-label="Sections">
-      <a href="#practices">Practices</a>
-      <a href="#ritual">Daily ritual</a>
-      <a href="#science">Science</a>
-      <a href="#progress">Your practice</a>
-      <a href="#safety">Safety</a>
+    <div class="nav-brands">
+      <a class="brand" href="#top" aria-label="<!--@t:nav.home-->"><!--@star--><span><!--@t:brand--></span></a>
+      <a class="bti-badge" href="<!--@bti-->" target="_blank" rel="noopener" aria-label="<!--@t:bti.aria-->" title="<!--@t:bti.by--> Nimrod Kaufman · Breath Therapy Institute"><span class="bti-mark"></span></a>
+    </div>
+    <nav class="nav-links" aria-label="<!--@t:nav.sections-->">
+      <a href="#practices"><!--@t:nav.practices--></a>
+      <a href="#ritual"><!--@t:nav.ritual--></a>
+      <a href="#science"><!--@t:nav.science--></a>
+      <a href="#progress"><!--@t:nav.progress--></a>
+      <a href="#safety"><!--@t:nav.safety--></a>
     </nav>
-    <button class="nav-cta" type="button" data-begin="coherent">Breathe now</button>
+    <div class="nav-tools" role="group" aria-label="<!--@t:nav.settings-->">
+      <a class="lang-switch" href="<!--@otherurl-->" hreflang="<!--@otherlang-->" lang="<!--@otherlang-->" data-lang-to="<!--@otherlang-->" aria-label="<!--@t:lang.switch-->"><span class="ls-opt" data-l="en">EN</span><span class="ls-opt" data-l="he" lang="he">עב</span><i class="ls-thumb" aria-hidden="true"></i></a>
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="<!--@t:theme.toLight-->" data-label-light="<!--@t:theme.toLight-->" data-label-dark="<!--@t:theme.toDark-->">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <defs><mask id="tt-mask"><rect width="24" height="24" fill="#fff"/><circle class="tt-bite" cx="17.5" cy="6.5" r="7" fill="#000"/></mask></defs>
+          <g class="tt-rays" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 1.6v2.6M12 19.8v2.6M1.6 12h2.6M19.8 12h2.6M4.65 4.65l1.84 1.84M17.51 17.51l1.84 1.84M4.65 19.35l1.84-1.84M17.51 6.49l1.84-1.84"/></g>
+          <circle class="tt-core" cx="12" cy="12" r="5" fill="currentColor" mask="url(#tt-mask)"/>
+        </svg>
+      </button>
+    </div>
+    <button class="nav-cta" type="button" data-begin="coherent" aria-label="<!--@t:nav.cta-->"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><span><!--@t:nav.cta--></span></button>
   </header>
 
   <main id="top">
@@ -51,16 +70,17 @@
       <div class="sky" aria-hidden="true">
         <div class="stars" id="stars"></div>
         <div class="shooting"></div>
-        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z" fill="#F4E6C8"/></svg>
+        <div class="clouds"><i></i><i></i><i></i><i></i></div>
+        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z"/></svg>
       </div>
       <div class="sun" aria-hidden="true"><div class="sun-glow"></div><div class="sun-disc"></div></div>
       <svg class="dunes" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <defs>
-          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A4B52"/><stop offset="1" stop-color="#5A3044"/></linearGradient>
-          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E3245"/><stop offset="1" stop-color="#3A2337"/></linearGradient>
-          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2336"/><stop offset="1" stop-color="#231A2C"/></linearGradient>
-          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E1726"/><stop offset="1" stop-color="#110E1A"/></linearGradient>
-          <linearGradient id="ridge" x1="0" x2="1"><stop offset="0" stop-color="#EBC07E" stop-opacity="0"/><stop offset=".45" stop-color="#EBC07E" stop-opacity=".55"/><stop offset="1" stop-color="#EBC07E" stop-opacity="0"/></linearGradient>
+          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop class="d1a" offset="0"/><stop class="d1b" offset="1"/></linearGradient>
+          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop class="d2a" offset="0"/><stop class="d2b" offset="1"/></linearGradient>
+          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop class="d3a" offset="0"/><stop class="d3b" offset="1"/></linearGradient>
+          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop class="d4a" offset="0"/><stop class="d4b" offset="1"/></linearGradient>
+          <linearGradient id="ridge" x1="0" x2="1"><stop class="rg" offset="0" stop-opacity="0"/><stop class="rg" offset=".45" stop-opacity=".55"/><stop class="rg" offset="1" stop-opacity="0"/></linearGradient>
         </defs>
         <g class="dune" data-depth="0.08"><path d="M0,560 C180,500 320,470 520,500 C700,527 820,470 1000,455 C1180,440 1320,490 1440,470 L1440,800 L0,800Z" fill="url(#d1)"/><path d="M380,486 C460,480 500,490 560,503 C700,527 820,470 1000,455" fill="none" stroke="url(#ridge)" stroke-width="1.5"/></g>
         <g class="dune" data-depth="0.16"><path d="M0,625 C200,565 380,605 560,590 C760,573 860,525 1060,545 C1240,563 1340,605 1440,585 L1440,800 L0,800Z" fill="url(#d2)"/><path d="M700,575 C800,560 880,525 1060,545 C1160,555 1240,570 1300,585" fill="none" stroke="url(#ridge)" stroke-width="1.2" opacity=".7"/></g>
@@ -68,26 +88,26 @@
         <g class="dune" data-depth="0.38"><path d="M0,768 C260,728 520,752 760,742 C1000,732 1200,706 1440,726 L1440,800 L0,800Z" fill="url(#d4)"/></g>
       </svg>
       <div class="hero-inner">
-        <p class="eyebrow hero-eyebrow">Daily breath practice</p>
-        <h1 id="hero-title" class="hero-title">Neshimot</h1>
-        <p class="hero-scripts" aria-label="Neshimot in Hebrew, and its Arabic cousin nasīm"><span lang="he" dir="rtl">נשימות</span><i></i><span lang="ar" dir="rtl">نسيم</span></p>
-        <p class="hero-sub">Hebrew for <em>breaths</em> — from the same ancient root as <em>neshamah</em>, the soul, and the Arabic <em>nasīm</em>, a gentle breeze. <!--@countword--> guided practices and a living breath timer — a few quiet minutes, every day.</p>
+        <p class="eyebrow hero-eyebrow"><!--@t:hero.eyebrow--></p>
+        <h1 id="hero-title" class="hero-title"><!--@t:hero.title--></h1>
+        <p class="hero-scripts" aria-label="<!--@t:hero.scriptsAria-->"><!--@t:hero.scripts--></p>
+        <p class="hero-sub"><!--@t:hero.sub--></p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="#practices">Explore the practices</a>
+          <a class="btn btn-primary" href="#practices"><!--@t:hero.explore--></a>
           <button class="btn btn-ghost" type="button" data-begin="physiological-sigh" data-minutes="1">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>1-minute reset
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><!--@t:hero.reset-->
           </button>
         </div>
       </div>
-      <a class="scroll-cue" href="#how" aria-label="Scroll down"><span></span></a>
+      <a class="scroll-cue" href="#how" aria-label="<!--@t:hero.scroll-->"><span></span></a>
     </section>
 
     <!-- ============ HOW ============ -->
-    <section class="how" id="how" aria-label="How it works">
+    <section class="how" id="how" aria-label="<!--@t:how.aria-->">
       <div class="wrap how-grid">
-        <div class="how-item reveal"><span class="how-n">i</span><h2>Choose</h2><p>Pick a practice for what you need right now — to ground, to balance, to calm or to energise.</p></div>
-        <div class="how-item reveal"><span class="how-n">ii</span><h2>Follow the sun</h2><p>Press <em>Begin</em>. The sun swells as you inhale, rests while you hold and sets as you exhale. Soft tones lead the way, so your eyes can close.</p></div>
-        <div class="how-item reveal"><span class="how-n">iii</span><h2>Return daily</h2><p>Five minutes every day changes more than an hour once a week. Your streak is kept privately on this device.</p></div>
+        <div class="how-item reveal"><span class="how-n">i</span><h2><!--@t:how.1h--></h2><p><!--@t:how.1p--></p></div>
+        <div class="how-item reveal"><span class="how-n">ii</span><h2><!--@t:how.2h--></h2><p><!--@t:how.2p--></p></div>
+        <div class="how-item reveal"><span class="how-n">iii</span><h2><!--@t:how.3h--></h2><p><!--@t:how.3p--></p></div>
       </div>
     </section>
 
@@ -95,17 +115,17 @@
     <section class="section practices pattern-bg" id="practices" aria-labelledby="practices-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow">The practices</p>
-          <h2 id="practices-title" class="section-title"><!--@countword--> practices for every day</h2>
-          <p class="section-lede">Each practice has a purpose. Read the technique, look at its rhythm, then press <em>Begin</em> — the timer guides every inhale, hold and exhale with light and sound.</p>
+          <p class="eyebrow"><!--@t:practices.eyebrow--></p>
+          <h2 id="practices-title" class="section-title"><!--@t:practices.title--></h2>
+          <p class="section-lede"><!--@t:practices.lede--></p>
         </header>
-        <div class="filters reveal" role="group" aria-label="Filter by purpose"><!--@filters--></div>
+        <div class="filters reveal" role="group" aria-label="<!--@t:filter.aria-->"><!--@filters--></div>
         <div class="cards" id="cards"><!--@cards--></div>
       </div>
     </section>
 
     <!-- ============ CHAPTERS ============ -->
-    <section class="chapters" aria-label="Practice guides">
+    <section class="chapters" id="chapters" aria-label="<!--@t:chapters.aria-->">
       <div class="wrap"><!--@chapters--></div>
     </section>
 
@@ -113,9 +133,9 @@
     <section class="section ritual-sec pattern-bg" id="ritual" aria-labelledby="ritual-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow">Daily ritual</p>
-          <h2 id="ritual-title" class="section-title">Three moments, one day</h2>
-          <p class="section-lede">If you practise once, choose the moment you need most. To build a lasting habit, follow the sun — each ritual plays its practices back to back.</p>
+          <p class="eyebrow"><!--@t:ritual.eyebrow--></p>
+          <h2 id="ritual-title" class="section-title"><!--@t:ritual.title--></h2>
+          <p class="section-lede"><!--@t:ritual.lede--></p>
         </header>
         <div class="rituals"><!--@rituals--></div>
       </div>
@@ -125,25 +145,25 @@
     <section class="section science" id="science" aria-labelledby="science-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow">Why it works</p>
-          <h2 id="science-title" class="section-title">The science of a slower breath</h2>
-          <p class="section-lede">Every breath nudges your heart. Slow the breath and the nudges grow into waves — move the slider and watch heart and breath fall into resonance.</p>
+          <p class="eyebrow"><!--@t:science.eyebrow--></p>
+          <h2 id="science-title" class="section-title"><!--@t:science.title--></h2>
+          <p class="section-lede"><!--@t:science.lede--></p>
         </header>
         <div class="lab reveal">
           <div class="lab-main">
-            <div class="lab-legend"><span><i class="sw sw-in"></i>Breath</span><span><i class="sw sw-hr"></i>Heart rate</span></div>
-            <svg class="lab-chart" id="rsa" viewBox="0 0 640 240" role="img" aria-label="Animated chart of breath and heart rate"></svg>
+            <div class="lab-legend"><span><i class="sw sw-in"></i><!--@t:lab.breath--></span><span><i class="sw sw-hr"></i><!--@t:lab.hr--></span></div>
+            <svg class="lab-chart" id="rsa" viewBox="0 0 640 240" role="img" aria-label="<!--@t:lab.chartAria-->"></svg>
             <div class="lab-control">
-              <label for="bpm">Breaths per minute</label>
+              <label for="bpm"><!--@t:lab.bpm--></label>
               <input type="range" id="bpm" min="3" max="20" step="0.5" value="12" />
               <output id="bpm-out" for="bpm">12</output>
             </div>
           </div>
           <aside class="lab-side">
-            <p class="lab-stat"><span id="hr-swing">±3</span><small>bpm heart-rate swing</small></p>
-            <svg class="lab-curve" id="curve" viewBox="0 0 260 150" role="img" aria-label="Resonance curve peaking near six breaths per minute"></svg>
-            <p class="lab-note" id="lab-note">A typical resting rate. The heart barely responds to each breath.</p>
-            <p class="lab-fine">Illustrative model of respiratory sinus arrhythmia, after resonance-frequency research (Lehrer &amp; Gevirtz, 2014).</p>
+            <p class="lab-stat"><span id="hr-swing">±3</span><small><!--@t:lab.swing--></small></p>
+            <svg class="lab-curve" id="curve" viewBox="0 0 260 150" role="img" aria-label="<!--@t:lab.curveAria-->"></svg>
+            <p class="lab-note" id="lab-note"><!--@t:lab.n4--></p>
+            <p class="lab-fine"><!--@t:lab.fine--></p>
           </aside>
         </div>
         <div class="principles"><!--@principles--></div>
@@ -154,66 +174,66 @@
     <section class="section progress pattern-bg" id="progress" aria-labelledby="progress-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow">Your practice</p>
-          <h2 id="progress-title" class="section-title">Small breaths, every day</h2>
-          <p class="section-lede">Sessions of a minute or more are recorded automatically. Everything stays on this device.</p>
+          <p class="eyebrow"><!--@t:progress.eyebrow--></p>
+          <h2 id="progress-title" class="section-title"><!--@t:progress.title--></h2>
+          <p class="section-lede"><!--@t:progress.lede--></p>
         </header>
         <div class="stats reveal">
-          <div class="stat"><span class="stat-v" id="st-streak">0</span><span class="stat-l">day streak</span></div>
-          <div class="stat"><span class="stat-v" id="st-week">0</span><span class="stat-l">minutes this week</span></div>
-          <div class="stat"><span class="stat-v" id="st-total">0</span><span class="stat-l">sessions in total</span></div>
+          <div class="stat"><span class="stat-v" id="st-streak">0</span><span class="stat-l"><!--@t:stat.streak--></span></div>
+          <div class="stat"><span class="stat-v" id="st-week">0</span><span class="stat-l"><!--@t:stat.week--></span></div>
+          <div class="stat"><span class="stat-v" id="st-total">0</span><span class="stat-l"><!--@t:stat.total--></span></div>
         </div>
         <div class="progress-grid">
           <div class="panel reveal">
-            <h3 class="panel-title">The last seven days</h3>
-            <svg class="week-chart" id="week" viewBox="0 0 420 180" role="img" aria-label="Minutes practised on each of the last seven days"></svg>
+            <h3 class="panel-title"><!--@t:week.title--></h3>
+            <svg class="week-chart" id="week" viewBox="0 0 420 180" role="img" aria-label="<!--@t:week.aria-->"></svg>
           </div>
           <div class="panel reveal cp" id="cp">
             <div class="cp-head">
               <span class="cp-icon"><!--@hourglass--></span>
-              <div><h3 class="panel-title">Breath-hold check</h3><p class="panel-sub">The “control pause” — a simple gauge of breathing efficiency used in Buteyko-based training.</p></div>
+              <div><h3 class="panel-title"><!--@t:cp.title--></h3><p class="panel-sub"><!--@t:cp.sub--></p></div>
             </div>
             <ol class="cp-steps">
-              <li>Sit quietly and breathe normally through the nose for a minute.</li>
-              <li>After a <em>normal</em> exhale, pinch your nose and press <strong>Start</strong>.</li>
-              <li>Press <strong>Stop</strong> at the first clear urge to breathe — not your maximum. Your next breath should be calm.</li>
+              <li><!--@t:cp.s1--></li>
+              <li><!--@t:cp.s2--></li>
+              <li><!--@t:cp.s3--></li>
             </ol>
             <div class="cp-timer">
-              <span class="cp-time" id="cp-time" aria-live="off">0.0</span><span class="cp-unit">s</span>
-              <button class="btn btn-primary" type="button" id="cp-btn">Start</button>
+              <span class="cp-time" id="cp-time" aria-live="off">0.0</span><span class="cp-unit"><!--@t:cp.unit--></span>
+              <button class="btn btn-primary" type="button" id="cp-btn"><!--@t:cp.start--></button>
             </div>
             <p class="cp-result" id="cp-result" aria-live="polite"></p>
-            <svg class="cp-chart" id="cp-chart" viewBox="0 0 420 150" role="img" aria-label="Your breath-hold results over time"></svg>
-            <ul class="cp-list" id="cp-list" aria-label="Recent readings" hidden></ul>
-            <p class="lab-fine">Reference ranges from Buteyko practice: under 10s — strained · 10–20s — room to grow · 20–40s — good · 40s+ — excellent. A training gauge, not a medical test.</p>
+            <svg class="cp-chart" id="cp-chart" viewBox="0 0 420 150" role="img" aria-label="<!--@t:cp.chartAria-->"></svg>
+            <ul class="cp-list" id="cp-list" aria-label="<!--@t:cp.listAria-->" hidden></ul>
+            <p class="lab-fine"><!--@t:cp.fine--></p>
           </div>
         </div>
         <div class="panel diary reveal" id="diary">
           <div class="diary-head">
             <div>
-              <h3 class="panel-title">Breathing diary</h3>
-              <p class="panel-sub">Every session, how it left you, and a few words about what you noticed. Kept privately on this device.</p>
+              <h3 class="panel-title"><!--@t:diary.title--></h3>
+              <p class="panel-sub"><!--@t:diary.sub--></p>
             </div>
             <div class="diary-actions">
-              <button class="btn btn-ghost" type="button" id="diary-new">New note</button>
-              <button class="link-btn" type="button" id="diary-export">Download my diary</button>
+              <button class="btn btn-ghost" type="button" id="diary-new"><!--@t:diary.new--></button>
+              <button class="link-btn" type="button" id="diary-export"><!--@t:diary.export--></button>
             </div>
           </div>
           <div class="diary-locked" id="diary-locked" hidden>
-            <p>Sign up free to keep a breathing diary and follow your progress.</p>
-            <button class="btn btn-primary" type="button" id="diary-unlock">Unlock — it's free</button>
+            <p><!--@t:diary.locked--></p>
+            <button class="btn btn-primary" type="button" id="diary-unlock"><!--@t:diary.unlock--></button>
           </div>
           <form class="diary-compose" id="diary-compose" hidden>
-            <label class="field"><span>Practice</span><select id="dc-practice"></select></label>
-            <label class="field"><span>Note</span><textarea id="dc-text" rows="3" maxlength="2000" placeholder="What did you notice? Sensations, mood, sleep, energy…"></textarea></label>
-            <div class="diary-row-actions"><button class="btn btn-primary" type="submit">Save note</button><button class="link-btn" type="button" id="dc-cancel">Cancel</button></div>
+            <label class="field"><span><!--@t:diary.practice--></span><select id="dc-practice"></select></label>
+            <label class="field"><span><!--@t:diary.note--></span><textarea id="dc-text" rows="3" maxlength="2000" placeholder="<!--@t:diary.placeholder-->"></textarea></label>
+            <div class="diary-row-actions"><button class="btn btn-primary" type="submit"><!--@t:diary.save--></button><button class="link-btn" type="button" id="dc-cancel"><!--@t:diary.cancel--></button></div>
           </form>
           <div class="diary-moods" id="diary-moods" hidden></div>
           <ol class="diary-list" id="diary-list"></ol>
-          <p class="diary-empty" id="diary-empty">Your sessions and notes will appear here.</p>
-          <button class="link-btn diary-more" type="button" id="diary-more" hidden>Show more</button>
+          <p class="diary-empty" id="diary-empty"><!--@t:diary.empty--></p>
+          <button class="link-btn diary-more" type="button" id="diary-more" hidden><!--@t:diary.more--></button>
         </div>
-        <p class="reset-row"><button class="link-btn" type="button" id="reset-data">Clear my practice history</button></p>
+        <p class="reset-row"><button class="link-btn" type="button" id="reset-data"><!--@t:reset.btn--></button></p>
       </div>
     </section>
 
@@ -221,9 +241,9 @@
     <section class="section safety" id="safety" aria-labelledby="safety-title">
       <div class="wrap safety-grid">
         <header class="section-head reveal">
-          <p class="eyebrow">Practise wisely</p>
-          <h2 id="safety-title" class="section-title">Gentle first</h2>
-          <p class="section-lede">Breath is powerful medicine. Respect your limits — the right amount always feels good.</p>
+          <p class="eyebrow"><!--@t:safety.eyebrow--></p>
+          <h2 id="safety-title" class="section-title"><!--@t:safety.title--></h2>
+          <p class="section-lede"><!--@t:safety.lede--></p>
         </header>
         <ul class="safety-list"><!--@safety--></ul>
       </div>
@@ -232,9 +252,13 @@
 
   <footer class="footer">
     <div class="wrap footer-inner">
-      <a class="brand" href="#top"><!--@star--><span>Neshimot</span></a>
-      <p class="footer-line">Breathe in. Breathe out. Return tomorrow.</p>
-      <p class="footer-fine">For wellbeing and education — not medical advice. Sound is generated live in your browser. · <a href="/privacy">Privacy</a></p>
+      <a class="brand" href="#top"><!--@star--><span><!--@t:brand--></span></a>
+      <p class="footer-line"><!--@t:footer.line--></p>
+      <div class="credit">
+        <a class="credit-logo" href="<!--@bti-->" target="_blank" rel="noopener" aria-label="<!--@t:bti.aria-->"><span class="bti-logo"></span></a>
+        <p class="credit-text"><!--@credit--></p>
+      </div>
+      <p class="footer-fine"><!--@t:footer.fine--> · <a href="<!--@t:privacy.href-->"><!--@t:footer.privacy--></a> · <a href="<!--@otherurl-->" hreflang="<!--@otherlang-->" lang="<!--@otherlang-->" data-lang-to="<!--@otherlang-->"><!--@othername--></a></p>
     </div>
   </footer>
 
@@ -243,57 +267,57 @@
     <div class="pr-sky" aria-hidden="true"><div class="stars" id="pr-stars"></div></div>
     <canvas class="pr-sand" id="sand" aria-hidden="true"></canvas>
     <svg class="pr-dunes" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <path d="M0,150 C200,100 380,130 560,118 C760,104 880,70 1080,88 C1240,102 1340,130 1440,118 L1440,300 L0,300Z" fill="#2A1D30" opacity=".85"/>
-      <path d="M0,215 C240,178 460,200 700,190 C940,180 1180,160 1440,182 L1440,300 L0,300Z" fill="#1A1422"/>
-      <path d="M0,265 C300,240 620,258 900,250 C1140,243 1300,232 1440,240 L1440,300 L0,300Z" fill="#110E1A"/>
+      <path class="pd1" d="M0,150 C200,100 380,130 560,118 C760,104 880,70 1080,88 C1240,102 1340,130 1440,118 L1440,300 L0,300Z"/>
+      <path class="pd2" d="M0,215 C240,178 460,200 700,190 C940,180 1180,160 1440,182 L1440,300 L0,300Z"/>
+      <path class="pd3" d="M0,265 C300,240 620,258 900,250 C1140,243 1300,232 1440,240 L1440,300 L0,300Z"/>
     </svg>
 
     <header class="pr-top">
       <div class="pr-titles">
-        <p class="eyebrow" id="pr-item">Practice</p>
-        <h2 id="pr-title" class="pr-title">Breathe</h2>
+        <p class="eyebrow" id="pr-item"><!--@t:pr.item--></p>
+        <h2 id="pr-title" class="pr-title"><!--@t:pr.title--></h2>
       </div>
-      <button class="icon-btn" type="button" id="pr-close" aria-label="Close">
+      <button class="icon-btn" type="button" id="pr-close" aria-label="<!--@t:pr.close-->">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
     </header>
 
     <!-- setup -->
-    <section class="pr-setup" id="pr-setup" aria-label="Session settings">
+    <section class="pr-setup" id="pr-setup" aria-label="<!--@t:setup.aria-->">
       <div class="setup-card">
         <p class="setup-welcome" id="su-welcome" hidden></p>
         <p class="setup-pattern" id="su-pattern"></p>
         <div class="setup-plan" id="su-plan"></div>
         <div class="setup-row" id="su-dose-row">
-          <span class="setup-label" id="su-dose-label">Duration</span>
+          <span class="setup-label" id="su-dose-label"><!--@t:setup.duration--></span>
           <div class="seg" id="su-dose" role="radiogroup" aria-labelledby="su-dose-label"></div>
         </div>
         <p class="setup-note" id="su-note" hidden></p>
         <div class="setup-row">
-          <label class="setup-label" for="su-pace">Pace</label>
+          <label class="setup-label" for="su-pace"><!--@t:setup.pace--></label>
           <div class="pace">
-            <span>Faster</span>
+            <span><!--@t:setup.faster--></span>
             <input type="range" id="su-pace" min="0.75" max="1.5" step="0.05" value="1" />
-            <span>Slower</span>
+            <span><!--@t:setup.slower--></span>
           </div>
         </div>
         <p class="setup-calc" id="su-calc"></p>
         <div class="setup-caution" id="su-caution" hidden>
-          <p><strong>Before you begin</strong><span id="su-caution-text"></span></p>
-          <a class="link-btn" id="su-caution-link" href="#safety">Read the full safety notes</a>
-          <label class="ack" id="su-ack-row" hidden><input type="checkbox" id="su-ack" /> <span>I've read the safety notes and this practice is right for me</span></label>
+          <p><strong><!--@t:setup.before--></strong><span id="su-caution-text"></span></p>
+          <a class="link-btn" id="su-caution-link" href="#safety"><!--@t:setup.safetyLink--></a>
+          <label class="ack" id="su-ack-row" hidden><input type="checkbox" id="su-ack" /> <span><!--@t:setup.ack--></span></label>
         </div>
         <div class="toggles">
-          <button class="toggle" type="button" data-pref="sound" aria-pressed="true"><span class="tg"></span>Breath tones</button>
-          <button class="toggle" type="button" data-pref="wind" aria-pressed="false"><span class="tg"></span>Desert wind</button>
-          <button class="toggle" type="button" data-pref="voice" aria-pressed="false"><span class="tg"></span>Voice cues</button>
-          <button class="toggle" type="button" data-pref="haptic" aria-pressed="true" id="tg-haptic"><span class="tg"></span>Vibration</button>
+          <button class="toggle" type="button" data-pref="sound" aria-pressed="true"><span class="tg"></span><!--@t:tg.sound--></button>
+          <button class="toggle" type="button" data-pref="wind" aria-pressed="false"><span class="tg"></span><!--@t:tg.wind--></button>
+          <button class="toggle" type="button" data-pref="voice" aria-pressed="false" id="tg-voice"><span class="tg"></span><!--@t:tg.voice--></button>
+          <button class="toggle" type="button" data-pref="haptic" aria-pressed="true" id="tg-haptic"><span class="tg"></span><!--@t:tg.haptic--></button>
         </div>
         <div class="setup-actions">
           <button class="btn btn-primary btn-lg" type="button" id="su-start">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>Start
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><!--@t:setup.start-->
           </button>
-          <button class="link-btn" type="button" id="su-preview" aria-pressed="false">Hear the tones</button>
+          <button class="link-btn" type="button" id="su-preview" aria-pressed="false"><!--@t:setup.preview--></button>
         </div>
       </div>
     </section>
@@ -301,23 +325,23 @@
     <!-- sign-up (after the first free session) -->
     <section class="pr-gate" id="pr-gate" aria-labelledby="gate-title">
       <div class="setup-card gate-card">
-        <p class="eyebrow">Free · takes ten seconds</p>
-        <h3 class="gate-title" id="gate-title">Unlock all <!--@countlower--> practices</h3>
-        <p class="gate-sub" id="gate-sub">Your first session was on us. Leave your name and email to keep practising — every practice and every ritual, free.</p>
+        <p class="eyebrow"><!--@t:gate.eyebrow--></p>
+        <h3 class="gate-title" id="gate-title"><!--@t:gate.title--></h3>
+        <p class="gate-sub" id="gate-sub"><!--@t:gate.sub--></p>
         <form id="gate-form" novalidate>
-          <label class="field"><span>Name</span><input id="g-name" name="name" type="text" autocomplete="name" maxlength="100" required /></label>
-          <label class="field"><span>Email</span><input id="g-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required /></label>
+          <label class="field"><span><!--@t:gate.name--></span><input id="g-name" name="name" type="text" autocomplete="name" maxlength="100" required /></label>
+          <label class="field"><span><!--@t:gate.email--></span><input id="g-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required dir="ltr" /></label>
           <div class="hp" aria-hidden="true"><label>Website<input name="website" id="g-website" type="text" tabindex="-1" autocomplete="off" /></label></div>
-          <label class="ack gate-consent"><input type="checkbox" id="g-consent" /> <span>Send me occasional breathing tips and updates. Unsubscribe any time.</span></label>
+          <label class="ack gate-consent"><input type="checkbox" id="g-consent" /> <span><!--@t:gate.consent--></span></label>
           <p class="gate-error" id="g-error" role="alert"></p>
-          <button class="btn btn-primary btn-lg" type="submit" id="g-submit">Unlock &amp; continue</button>
+          <button class="btn btn-primary btn-lg" type="submit" id="g-submit"><!--@t:gate.submit--></button>
         </form>
-        <p class="gate-privacy">ArberTech keeps your name and email in its contact list (HubSpot) to give you access — and, only if you tick the box, to send occasional emails. We never sell your details. <a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="mailto:hernan@arbertech.com">hernan@arbertech.com</a></p>
+        <p class="gate-privacy"><!--@t:gate.privacy--> <a href="<!--@t:privacy.href-->" target="_blank" rel="noopener"><!--@t:footer.privacy--></a> · <a href="mailto:hernan@arbertech.com">hernan@arbertech.com</a></p>
       </div>
     </section>
 
     <!-- stage -->
-    <section class="pr-stage" id="pr-stage" aria-label="Breath guide">
+    <section class="pr-stage" id="pr-stage" aria-label="<!--@t:stage.aria-->">
       <div class="orb" id="orb">
         <div class="orb-halo"></div>
         <!--@figure-->
@@ -326,11 +350,11 @@
           <circle class="ring-prog" id="ring" cx="50" cy="50" r="49"/>
         </svg>
         <div class="nostrils" id="nostrils" hidden aria-hidden="true">
-          <span data-side="left">Left</span><span class="ns-bridge"></span><span data-side="right">Right</span>
+          <span data-side="left"><!--@t:stage.left--></span><span class="ns-bridge"></span><span data-side="right"><!--@t:stage.right--></span>
         </div>
       </div>
       <div class="orb-caption">
-        <p class="cue" id="cue">Get ready</p>
+        <p class="cue" id="cue"><!--@t:cue.ready--></p>
         <p class="count" id="count"></p>
       </div>
       <p class="hint" id="hint"></p>
@@ -338,32 +362,32 @@
     </section>
 
     <!-- done -->
-    <section class="pr-done" id="pr-done" aria-label="Session complete">
+    <section class="pr-done" id="pr-done" aria-label="<!--@t:done.aria-->">
       <div class="done-mark"><!--@figuredone--></div>
-      <h3 class="done-title">Well breathed.</h3>
+      <h3 class="done-title"><!--@t:done.title--></h3>
       <p class="done-sub" id="done-sub"></p>
       <p class="done-streak" id="done-streak"></p>
       <div class="done-unlock" id="done-unlock" hidden>
-        <p>Enjoyed it? Unlock all <!--@countlower--> practices — it's free.</p>
-        <button class="btn btn-ghost" type="button" id="done-unlock-btn">Unlock all practices</button>
+        <p><!--@t:done.unlockText--></p>
+        <button class="btn btn-ghost" type="button" id="done-unlock-btn"><!--@t:done.unlockBtn--></button>
       </div>
       <div class="mood" id="mood" role="group" aria-labelledby="mood-q">
-        <p class="mood-q" id="mood-q">How do you feel?</p>
+        <p class="mood-q" id="mood-q"><!--@t:mood.q--></p>
         <div class="mood-opts">
-          <button type="button" data-mood="calmer" aria-pressed="false">Calmer</button>
-          <button type="button" data-mood="same" aria-pressed="false">About the same</button>
-          <button type="button" data-mood="energised" aria-pressed="false">Energised</button>
+          <button type="button" data-mood="calmer" aria-pressed="false"><!--@t:mood.calmer--></button>
+          <button type="button" data-mood="same" aria-pressed="false"><!--@t:mood.same--></button>
+          <button type="button" data-mood="energised" aria-pressed="false"><!--@t:mood.energised--></button>
         </div>
-        <p class="mood-thanks" id="mood-thanks" hidden>Noted — sit for a few more breaths before you go.</p>
+        <p class="mood-thanks" id="mood-thanks" hidden><!--@t:mood.thanks--></p>
       </div>
       <form class="done-note" id="done-note" hidden>
-        <label class="sr-only" for="dn-text">Diary note</label>
-        <textarea id="dn-text" rows="2" maxlength="2000" placeholder="Add a note to your diary — what did you notice?"></textarea>
-        <div class="diary-row-actions"><button class="btn btn-ghost" type="submit" id="dn-save">Save to diary</button><span class="dn-saved" id="dn-saved" role="status" hidden>Saved to your diary</span></div>
+        <label class="sr-only" for="dn-text"><!--@t:dn.label--></label>
+        <textarea id="dn-text" rows="2" maxlength="2000" placeholder="<!--@t:dn.placeholder-->"></textarea>
+        <div class="diary-row-actions"><button class="btn btn-ghost" type="submit" id="dn-save"><!--@t:dn.save--></button><span class="dn-saved" id="dn-saved" role="status" hidden><!--@t:dn.saved--></span></div>
       </form>
       <div class="setup-actions">
-        <button class="btn btn-primary" type="button" id="done-close">Return</button>
-        <button class="link-btn" type="button" id="done-again">Practise again</button>
+        <button class="btn btn-primary" type="button" id="done-close"><!--@t:done.close--></button>
+        <button class="link-btn" type="button" id="done-again"><!--@t:done.again--></button>
       </div>
     </section>
 
@@ -371,15 +395,15 @@
       <div class="pr-progress" aria-hidden="true"><div class="pr-progress-fill" id="prog"></div><div class="pr-ticks" id="pr-ticks"></div></div>
       <div class="pr-controls">
         <span class="pr-time" id="t-el">0:00</span>
-        <button class="icon-btn" type="button" id="btn-sound" aria-label="Mute tones" aria-pressed="false">
+        <button class="icon-btn" type="button" id="btn-sound" aria-label="<!--@t:bar.mute-->" aria-pressed="false">
           <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
-        <button class="play" type="button" id="btn-play" aria-label="Pause">
+        <button class="play" type="button" id="btn-play" aria-label="<!--@t:bar.pause-->">
           <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.6v13H8zM13.4 5.5H16v13h-2.6z" fill="currentColor"/></svg>
           <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
         </button>
-        <button class="icon-btn" type="button" id="btn-restart" aria-label="Restart">
+        <button class="icon-btn" type="button" id="btn-restart" aria-label="<!--@t:bar.restart-->">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 107-7H8.5M8.5 5V1.8M8.5 5l3 2.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <span class="pr-time pr-time-r" id="t-rem">0:00</span>
@@ -387,11 +411,11 @@
     </footer>
     <div class="pr-confirm" id="pr-confirm" hidden>
       <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-text">
-        <p class="confirm-title" id="cf-title">End this session?</p>
+        <p class="confirm-title" id="cf-title"><!--@t:cf.end--></p>
         <p class="confirm-text" id="cf-text"></p>
         <div class="confirm-actions">
-          <button class="btn btn-ghost" type="button" id="cf-cancel">Keep breathing</button>
-          <button class="btn btn-primary" type="button" id="cf-ok">End session</button>
+          <button class="btn btn-ghost" type="button" id="cf-cancel"><!--@t:cf.keep--></button>
+          <button class="btn btn-primary" type="button" id="cf-ok"><!--@t:cf.endBtn--></button>
         </div>
       </div>
     </div>
