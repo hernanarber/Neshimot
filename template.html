@@ -6,28 +6,29 @@
   <meta name="theme-color" content="#110E1A" />
   <meta name="color-scheme" content="dark light" />
   <script><!--@boot--></script>
-  <title><!--@t:meta.title--></title>
-  <meta name="description" content="<!--@t:meta.desc-->" />
+  <title><!--@title--></title>
+  <meta name="description" content="<!--@desc-->" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="<!--@t:meta.title-->" />
-  <meta property="og:description" content="<!--@t:meta.ogDesc-->" />
+  <meta property="og:title" content="<!--@title-->" />
+  <meta property="og:description" content="<!--@ogdesc-->" />
   <meta property="og:url" content="<!--@url-->" />
   <meta property="og:site_name" content="<!--@t:brand-->" />
   <meta property="og:locale" content="<!--@t:meta.locale-->" />
-  <meta property="og:image" content="https://www.neshimot.live/og.png" />
+  <meta property="og:image" content="<!--@ogimage-->" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://www.neshimot.live/og.png" />
+  <meta name="twitter:image" content="<!--@ogimage-->" />
   <link rel="canonical" href="<!--@url-->" />
-  <link rel="alternate" hreflang="en" href="https://www.neshimot.live/" />
-  <link rel="alternate" hreflang="he" href="https://www.neshimot.live/he" />
-  <link rel="alternate" hreflang="x-default" href="https://www.neshimot.live/" />
+  <link rel="alternate" hreflang="en" href="<!--@url_en-->" />
+  <link rel="alternate" hreflang="he" href="<!--@url_he-->" />
+  <link rel="alternate" hreflang="x-default" href="<!--@url_en-->" />
+<!--@jsonld-->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!--@fonts-->
@@ -36,20 +37,20 @@
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-  <a class="skip" href="#practices"><!--@t:skip--></a>
+  <a class="skip" href="<!--@skip-->"><!--@t:skip--></a>
   <div class="scenery" id="scenery" aria-hidden="true"></div>
 
   <header class="nav" id="nav">
     <div class="nav-brands">
-      <a class="brand" href="#top" aria-label="<!--@t:nav.home-->"><!--@star--><span><!--@t:brand--></span></a>
+      <a class="brand" href="<!--@home-->#top" aria-label="<!--@t:nav.home-->"><!--@star--><span><!--@t:brand--></span></a>
       <a class="bti-badge" href="<!--@bti-->" target="_blank" rel="noopener" aria-label="<!--@t:bti.aria-->" title="<!--@t:bti.by--> Nimrod Kaufman · Breath Therapy Institute"><span class="bti-mark"></span></a>
     </div>
     <nav class="nav-links" aria-label="<!--@t:nav.sections-->">
-      <a href="#practices"><!--@t:nav.practices--></a>
-      <a href="#ritual"><!--@t:nav.ritual--></a>
-      <a href="#science"><!--@t:nav.science--></a>
-      <a href="#progress"><!--@t:nav.progress--></a>
-      <a href="#safety"><!--@t:nav.safety--></a>
+      <a href="<!--@home-->#practices"><!--@t:nav.practices--></a>
+      <a href="<!--@home-->#ritual"><!--@t:nav.ritual--></a>
+      <a href="<!--@home-->#science"><!--@t:nav.science--></a>
+      <a href="<!--@home-->#progress"><!--@t:nav.progress--></a>
+      <a href="<!--@home-->#safety"><!--@t:nav.safety--></a>
     </nav>
     <div class="nav-tools" role="group" aria-label="<!--@t:nav.settings-->">
       <a class="lang-switch" href="<!--@otherurl-->" hreflang="<!--@otherlang-->" lang="<!--@otherlang-->" data-lang-to="<!--@otherlang-->" aria-label="<!--@t:lang.switch-->"><span class="ls-opt" data-l="en">EN</span><span class="ls-opt" data-l="he" lang="he">עב</span><i class="ls-thumb" aria-hidden="true"></i></a>
@@ -65,194 +66,12 @@
   </header>
 
   <main id="top">
-    <!-- ============ HERO ============ -->
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="sky" aria-hidden="true">
-        <div class="stars" id="stars"></div>
-        <div class="shooting"></div>
-        <div class="clouds"><i></i><i></i><i></i><i></i></div>
-        <svg class="moon" viewBox="0 0 40 40"><path d="M26 4 A16 16 0 1 0 36 30 A13 13 0 1 1 26 4Z"/></svg>
-      </div>
-      <div class="sun" aria-hidden="true"><div class="sun-glow"></div><div class="sun-disc"></div></div>
-      <svg class="dunes" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop class="d1a" offset="0"/><stop class="d1b" offset="1"/></linearGradient>
-          <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop class="d2a" offset="0"/><stop class="d2b" offset="1"/></linearGradient>
-          <linearGradient id="d3" x1="0" y1="0" x2="0" y2="1"><stop class="d3a" offset="0"/><stop class="d3b" offset="1"/></linearGradient>
-          <linearGradient id="d4" x1="0" y1="0" x2="0" y2="1"><stop class="d4a" offset="0"/><stop class="d4b" offset="1"/></linearGradient>
-          <linearGradient id="ridge" x1="0" x2="1"><stop class="rg" offset="0" stop-opacity="0"/><stop class="rg" offset=".45" stop-opacity=".55"/><stop class="rg" offset="1" stop-opacity="0"/></linearGradient>
-        </defs>
-        <g class="dune" data-depth="0.08"><path d="M0,560 C180,500 320,470 520,500 C700,527 820,470 1000,455 C1180,440 1320,490 1440,470 L1440,800 L0,800Z" fill="url(#d1)"/><path d="M380,486 C460,480 500,490 560,503 C700,527 820,470 1000,455" fill="none" stroke="url(#ridge)" stroke-width="1.5"/></g>
-        <g class="dune" data-depth="0.16"><path d="M0,625 C200,565 380,605 560,590 C760,573 860,525 1060,545 C1240,563 1340,605 1440,585 L1440,800 L0,800Z" fill="url(#d2)"/><path d="M700,575 C800,560 880,525 1060,545 C1160,555 1240,570 1300,585" fill="none" stroke="url(#ridge)" stroke-width="1.2" opacity=".7"/></g>
-        <g class="dune" data-depth="0.26"><path d="M0,700 C220,648 420,668 620,656 C820,644 980,604 1180,634 C1300,652 1380,672 1440,662 L1440,800 L0,800Z" fill="url(#d3)"/><path d="M60,682 C200,650 380,664 560,660" fill="none" stroke="url(#ridge)" stroke-width="1" opacity=".55"/></g>
-        <g class="dune" data-depth="0.38"><path d="M0,768 C260,728 520,752 760,742 C1000,732 1200,706 1440,726 L1440,800 L0,800Z" fill="url(#d4)"/></g>
-      </svg>
-      <div class="hero-inner">
-        <p class="eyebrow hero-eyebrow"><!--@t:hero.eyebrow--></p>
-        <h1 id="hero-title" class="hero-title"><!--@t:hero.title--></h1>
-        <p class="hero-scripts" aria-label="<!--@t:hero.scriptsAria-->"><!--@t:hero.scripts--></p>
-        <p class="hero-sub"><!--@t:hero.sub--></p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#practices"><!--@t:hero.explore--></a>
-          <button class="btn btn-ghost" type="button" data-begin="physiological-sigh" data-minutes="1">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><!--@t:hero.reset-->
-          </button>
-        </div>
-      </div>
-      <a class="scroll-cue" href="#how" aria-label="<!--@t:hero.scroll-->"><span></span></a>
-    </section>
-
-    <!-- ============ HOW ============ -->
-    <section class="how" id="how" aria-label="<!--@t:how.aria-->">
-      <div class="wrap how-grid">
-        <div class="how-item reveal"><span class="how-n">i</span><h2><!--@t:how.1h--></h2><p><!--@t:how.1p--></p></div>
-        <div class="how-item reveal"><span class="how-n">ii</span><h2><!--@t:how.2h--></h2><p><!--@t:how.2p--></p></div>
-        <div class="how-item reveal"><span class="how-n">iii</span><h2><!--@t:how.3h--></h2><p><!--@t:how.3p--></p></div>
-      </div>
-    </section>
-
-    <!-- ============ PRACTICES ============ -->
-    <section class="section practices pattern-bg" id="practices" aria-labelledby="practices-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><!--@t:practices.eyebrow--></p>
-          <h2 id="practices-title" class="section-title"><!--@t:practices.title--></h2>
-          <p class="section-lede"><!--@t:practices.lede--></p>
-        </header>
-        <div class="filters reveal" role="group" aria-label="<!--@t:filter.aria-->"><!--@filters--></div>
-        <div class="cards" id="cards"><!--@cards--></div>
-      </div>
-    </section>
-
-    <!-- ============ CHAPTERS ============ -->
-    <section class="chapters" id="chapters" aria-label="<!--@t:chapters.aria-->">
-      <div class="wrap"><!--@chapters--></div>
-    </section>
-
-    <!-- ============ RITUAL ============ -->
-    <section class="section ritual-sec pattern-bg" id="ritual" aria-labelledby="ritual-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><!--@t:ritual.eyebrow--></p>
-          <h2 id="ritual-title" class="section-title"><!--@t:ritual.title--></h2>
-          <p class="section-lede"><!--@t:ritual.lede--></p>
-        </header>
-        <div class="rituals"><!--@rituals--></div>
-      </div>
-    </section>
-
-    <!-- ============ SCIENCE ============ -->
-    <section class="section science" id="science" aria-labelledby="science-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><!--@t:science.eyebrow--></p>
-          <h2 id="science-title" class="section-title"><!--@t:science.title--></h2>
-          <p class="section-lede"><!--@t:science.lede--></p>
-        </header>
-        <div class="lab reveal">
-          <div class="lab-main">
-            <div class="lab-legend"><span><i class="sw sw-in"></i><!--@t:lab.breath--></span><span><i class="sw sw-hr"></i><!--@t:lab.hr--></span></div>
-            <svg class="lab-chart" id="rsa" viewBox="0 0 640 240" role="img" aria-label="<!--@t:lab.chartAria-->"></svg>
-            <div class="lab-control">
-              <label for="bpm"><!--@t:lab.bpm--></label>
-              <input type="range" id="bpm" min="3" max="20" step="0.5" value="12" />
-              <output id="bpm-out" for="bpm">12</output>
-            </div>
-          </div>
-          <aside class="lab-side">
-            <p class="lab-stat"><span id="hr-swing">±3</span><small><!--@t:lab.swing--></small></p>
-            <svg class="lab-curve" id="curve" viewBox="0 0 260 150" role="img" aria-label="<!--@t:lab.curveAria-->"></svg>
-            <p class="lab-note" id="lab-note"><!--@t:lab.n4--></p>
-            <p class="lab-fine"><!--@t:lab.fine--></p>
-          </aside>
-        </div>
-        <div class="principles"><!--@principles--></div>
-      </div>
-    </section>
-
-    <!-- ============ PROGRESS ============ -->
-    <section class="section progress pattern-bg" id="progress" aria-labelledby="progress-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><!--@t:progress.eyebrow--></p>
-          <h2 id="progress-title" class="section-title"><!--@t:progress.title--></h2>
-          <p class="section-lede"><!--@t:progress.lede--></p>
-        </header>
-        <div class="stats reveal">
-          <div class="stat"><span class="stat-v" id="st-streak">0</span><span class="stat-l"><!--@t:stat.streak--></span></div>
-          <div class="stat"><span class="stat-v" id="st-week">0</span><span class="stat-l"><!--@t:stat.week--></span></div>
-          <div class="stat"><span class="stat-v" id="st-total">0</span><span class="stat-l"><!--@t:stat.total--></span></div>
-        </div>
-        <div class="progress-grid">
-          <div class="panel reveal">
-            <h3 class="panel-title"><!--@t:week.title--></h3>
-            <svg class="week-chart" id="week" viewBox="0 0 420 180" role="img" aria-label="<!--@t:week.aria-->"></svg>
-          </div>
-          <div class="panel reveal cp" id="cp">
-            <div class="cp-head">
-              <span class="cp-icon"><!--@hourglass--></span>
-              <div><h3 class="panel-title"><!--@t:cp.title--></h3><p class="panel-sub"><!--@t:cp.sub--></p></div>
-            </div>
-            <ol class="cp-steps">
-              <li><!--@t:cp.s1--></li>
-              <li><!--@t:cp.s2--></li>
-              <li><!--@t:cp.s3--></li>
-            </ol>
-            <div class="cp-timer">
-              <span class="cp-time" id="cp-time" aria-live="off">0.0</span><span class="cp-unit"><!--@t:cp.unit--></span>
-              <button class="btn btn-primary" type="button" id="cp-btn"><!--@t:cp.start--></button>
-            </div>
-            <p class="cp-result" id="cp-result" aria-live="polite"></p>
-            <svg class="cp-chart" id="cp-chart" viewBox="0 0 420 150" role="img" aria-label="<!--@t:cp.chartAria-->"></svg>
-            <ul class="cp-list" id="cp-list" aria-label="<!--@t:cp.listAria-->" hidden></ul>
-            <p class="lab-fine"><!--@t:cp.fine--></p>
-          </div>
-        </div>
-        <div class="panel diary reveal" id="diary">
-          <div class="diary-head">
-            <div>
-              <h3 class="panel-title"><!--@t:diary.title--></h3>
-              <p class="panel-sub"><!--@t:diary.sub--></p>
-            </div>
-            <div class="diary-actions">
-              <button class="btn btn-ghost" type="button" id="diary-new"><!--@t:diary.new--></button>
-              <button class="link-btn" type="button" id="diary-export"><!--@t:diary.export--></button>
-            </div>
-          </div>
-          <div class="diary-locked" id="diary-locked" hidden>
-            <p><!--@t:diary.locked--></p>
-            <button class="btn btn-primary" type="button" id="diary-unlock"><!--@t:diary.unlock--></button>
-          </div>
-          <form class="diary-compose" id="diary-compose" hidden>
-            <label class="field"><span><!--@t:diary.practice--></span><select id="dc-practice"></select></label>
-            <label class="field"><span><!--@t:diary.note--></span><textarea id="dc-text" rows="3" maxlength="2000" placeholder="<!--@t:diary.placeholder-->"></textarea></label>
-            <div class="diary-row-actions"><button class="btn btn-primary" type="submit"><!--@t:diary.save--></button><button class="link-btn" type="button" id="dc-cancel"><!--@t:diary.cancel--></button></div>
-          </form>
-          <div class="diary-moods" id="diary-moods" hidden></div>
-          <ol class="diary-list" id="diary-list"></ol>
-          <p class="diary-empty" id="diary-empty"><!--@t:diary.empty--></p>
-          <button class="link-btn diary-more" type="button" id="diary-more" hidden><!--@t:diary.more--></button>
-        </div>
-        <p class="reset-row"><button class="link-btn" type="button" id="reset-data"><!--@t:reset.btn--></button></p>
-      </div>
-    </section>
-
-    <!-- ============ SAFETY ============ -->
-    <section class="section safety" id="safety" aria-labelledby="safety-title">
-      <div class="wrap safety-grid">
-        <header class="section-head reveal">
-          <p class="eyebrow"><!--@t:safety.eyebrow--></p>
-          <h2 id="safety-title" class="section-title"><!--@t:safety.title--></h2>
-          <p class="section-lede"><!--@t:safety.lede--></p>
-        </header>
-        <ul class="safety-list"><!--@safety--></ul>
-      </div>
-    </section>
+<!--@main-->
   </main>
 
   <footer class="footer">
     <div class="wrap footer-inner">
-      <a class="brand" href="#top"><!--@star--><span><!--@t:brand--></span></a>
+      <a class="brand" href="<!--@home-->#top"><!--@star--><span><!--@t:brand--></span></a>
       <p class="footer-line"><!--@t:footer.line--></p>
       <div class="credit">
         <a class="credit-logo" href="<!--@bti-->" target="_blank" rel="noopener" aria-label="<!--@t:bti.aria-->"><span class="bti-logo"></span></a>
@@ -389,6 +208,7 @@
       <div class="setup-actions">
         <button class="btn btn-primary" type="button" id="done-close"><!--@t:done.close--></button>
         <button class="link-btn" type="button" id="done-again"><!--@t:done.again--></button>
+        <button class="link-btn" type="button" id="done-remind"><!--@t:done.remind--></button>
       </div>
     </section>
 

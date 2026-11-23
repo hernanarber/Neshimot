@@ -145,12 +145,15 @@ const SCENES = {
 // which scene belongs to which part of the page
 const MAP = [
   ['.hero', 'dunes'],
+  ['.pp-hero', 'dunes'],
   ['#how', 'dunes'],
   ['#practices', 'dunes'],
   ['#chapters', 'oasis'],
   ['#ritual', 'mountains'],
   ['#science', 'sea'],
   ['#progress', 'olives'],
+  ['#remind', 'olives'],
+  ['#more', 'mountains'],
   ['#safety', 'acacia'],
   ['.footer', 'acacia'],
 ];

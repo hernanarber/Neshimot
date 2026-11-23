@@ -1,0 +1,140 @@
+{
+ "en": {
+  "alarm": "Time to breathe",
+  "any": {
+   "title": "Neshimot · a few minutes of breath",
+   "min": 5,
+   "url": "https://www.neshimot.live/",
+   "desc": "Your daily breathing practice (5 min). Begin here: https://www.neshimot.live/"
+  },
+  "diaphragmatic": {
+   "title": "Neshimot · Diaphragmatic Breathing",
+   "min": 5,
+   "url": "https://www.neshimot.live/practices/diaphragmatic-breathing",
+   "desc": "Your daily breathing practice (5 min). Begin here: https://www.neshimot.live/practices/diaphragmatic-breathing"
+  },
+  "three-part": {
+   "title": "Neshimot · Three-Part Breath",
+   "min": 4,
+   "url": "https://www.neshimot.live/practices/three-part-breath",
+   "desc": "Your daily breathing practice (4 min). Begin here: https://www.neshimot.live/practices/three-part-breath"
+  },
+  "coherent": {
+   "title": "Neshimot · Coherent Breathing",
+   "min": 5,
+   "url": "https://www.neshimot.live/practices/coherent-breathing",
+   "desc": "Your daily breathing practice (5 min). Begin here: https://www.neshimot.live/practices/coherent-breathing"
+  },
+  "box": {
+   "title": "Neshimot · Box Breathing",
+   "min": 4,
+   "url": "https://www.neshimot.live/practices/box-breathing",
+   "desc": "Your daily breathing practice (4 min). Begin here: https://www.neshimot.live/practices/box-breathing"
+  },
+  "alternate-nostril": {
+   "title": "Neshimot · Alternate Nostril Breathing",
+   "min": 5,
+   "url": "https://www.neshimot.live/practices/alternate-nostril-breathing",
+   "desc": "Your daily breathing practice (5 min). Begin here: https://www.neshimot.live/practices/alternate-nostril-breathing"
+  },
+  "physiological-sigh": {
+   "title": "Neshimot · Physiological Sigh",
+   "min": 3,
+   "url": "https://www.neshimot.live/practices/physiological-sigh",
+   "desc": "Your daily breathing practice (3 min). Begin here: https://www.neshimot.live/practices/physiological-sigh"
+  },
+  "4-7-8": {
+   "title": "Neshimot · 4-7-8 Breathing",
+   "min": 2,
+   "url": "https://www.neshimot.live/practices/4-7-8-breathing",
+   "desc": "Your daily breathing practice (2 min). Begin here: https://www.neshimot.live/practices/4-7-8-breathing"
+  },
+  "humming": {
+   "title": "Neshimot · Humming Bee Breath",
+   "min": 4,
+   "url": "https://www.neshimot.live/practices/humming-bee-breath",
+   "desc": "Your daily breathing practice (4 min). Begin here: https://www.neshimot.live/practices/humming-bee-breath"
+  },
+  "kapalabhati": {
+   "title": "Neshimot · Skull-Shining Breath",
+   "min": 4,
+   "url": "https://www.neshimot.live/practices/kapalabhati",
+   "desc": "Your daily breathing practice (4 min). Begin here: https://www.neshimot.live/practices/kapalabhati"
+  },
+  "connected": {
+   "title": "Neshimot · Connected Breathing",
+   "min": 3,
+   "url": "https://www.neshimot.live/practices/connected-breathing",
+   "desc": "Your daily breathing practice (3 min). Begin here: https://www.neshimot.live/practices/connected-breathing"
+  }
+ },
+ "he": {
+  "alarm": "הגיע הזמן לנשום",
+  "any": {
+   "title": "נשימות · כמה דקות של נשימה",
+   "min": 5,
+   "url": "https://www.neshimot.live/he",
+   "desc": "תרגול הנשימה היומי שלך (5 דק׳). מתחילים כאן: https://www.neshimot.live/he"
+  },
+  "diaphragmatic": {
+   "title": "נשימות · נשימה סרעפתית",
+   "min": 5,
+   "url": "https://www.neshimot.live/he/practices/diaphragmatic-breathing",
+   "desc": "תרגול הנשימה היומי שלך (5 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/diaphragmatic-breathing"
+  },
+  "three-part": {
+   "title": "נשימות · נשימה בשלושה חלקים",
+   "min": 4,
+   "url": "https://www.neshimot.live/he/practices/three-part-breath",
+   "desc": "תרגול הנשימה היומי שלך (4 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/three-part-breath"
+  },
+  "coherent": {
+   "title": "נשימות · נשימה קוהרנטית",
+   "min": 5,
+   "url": "https://www.neshimot.live/he/practices/coherent-breathing",
+   "desc": "תרגול הנשימה היומי שלך (5 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/coherent-breathing"
+  },
+  "box": {
+   "title": "נשימות · נשימת קופסה",
+   "min": 4,
+   "url": "https://www.neshimot.live/he/practices/box-breathing",
+   "desc": "תרגול הנשימה היומי שלך (4 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/box-breathing"
+  },
+  "alternate-nostril": {
+   "title": "נשימות · נשימה לסירוגין בין הנחיריים",
+   "min": 5,
+   "url": "https://www.neshimot.live/he/practices/alternate-nostril-breathing",
+   "desc": "תרגול הנשימה היומי שלך (5 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/alternate-nostril-breathing"
+  },
+  "physiological-sigh": {
+   "title": "נשימות · אנחה פיזיולוגית",
+   "min": 3,
+   "url": "https://www.neshimot.live/he/practices/physiological-sigh",
+   "desc": "תרגול הנשימה היומי שלך (3 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/physiological-sigh"
+  },
+  "4-7-8": {
+   "title": "נשימות · נשימת 4-7-8",
+   "min": 2,
+   "url": "https://www.neshimot.live/he/practices/4-7-8-breathing",
+   "desc": "תרגול הנשימה היומי שלך (2 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/4-7-8-breathing"
+  },
+  "humming": {
+   "title": "נשימות · נשימת הדבורה המזמזמת",
+   "min": 4,
+   "url": "https://www.neshimot.live/he/practices/humming-bee-breath",
+   "desc": "תרגול הנשימה היומי שלך (4 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/humming-bee-breath"
+  },
+  "kapalabhati": {
+   "title": "נשימות · נשימת הגולגולת הזוהרת",
+   "min": 4,
+   "url": "https://www.neshimot.live/he/practices/kapalabhati",
+   "desc": "תרגול הנשימה היומי שלך (4 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/kapalabhati"
+  },
+  "connected": {
+   "title": "נשימות · נשימה מחוברת",
+   "min": 3,
+   "url": "https://www.neshimot.live/he/practices/connected-breathing",
+   "desc": "תרגול הנשימה היומי שלך (3 דק׳). מתחילים כאן: https://www.neshimot.live/he/practices/connected-breathing"
+  }
+ }
+}

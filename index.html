@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#110E1A" />
   <meta name="color-scheme" content="dark light" />
-  <script>(function(){var r=document.documentElement;r.classList.add('js');var th=null;try{th=JSON.parse(localStorage.getItem('neshimot.theme'))}catch(e){}if(th!=='light'&&th!=='dark'){th=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';r.dataset.themeAuto='1'}r.dataset.theme=th;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=th==='light'?'#F7EFE3':'#110E1A';try{if(location.pathname==='/'||location.pathname==='/index.html'){var l=null;try{l=JSON.parse(localStorage.getItem('neshimot.lang'))}catch(e){}if(!l){var n=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(/^(he|iw)\b/i.test(n))l='he'}if(l==='he')location.replace('/he'+location.search+location.hash)}}catch(e){}})();</script>
+  <script>(function(){var r=document.documentElement;r.classList.add('js');var th=null;try{th=JSON.parse(localStorage.getItem('neshimot.theme'))}catch(e){}if(th!=='light'&&th!=='dark'){th=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';r.dataset.themeAuto='1'}r.dataset.theme=th;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=th==='light'?'#F7EFE3':'#110E1A';try{var p=location.pathname,home=p==='/'||p==='/index.html',l=null;try{l=JSON.parse(localStorage.getItem('neshimot.lang'))}catch(e){}if(!l&&home){var n=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(/^(he|iw)\b/i.test(n))l='he'}if(l==='he')location.replace('/he'+(home?'':p.replace(/\.html$/,''))+location.search+location.hash)}catch(e){}})();</script>
   <title>Neshimot — Daily Breathing Practice</title>
   <meta name="description" content="Ten guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert." />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -28,11 +28,12 @@
   <link rel="alternate" hreflang="en" href="https://www.neshimot.live/" />
   <link rel="alternate" hreflang="he" href="https://www.neshimot.live/he" />
   <link rel="alternate" hreflang="x-default" href="https://www.neshimot.live/" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Neshimot","url":"https://www.neshimot.live/","inLanguage":"en","description":"Ten guided daily breathing exercises with a living breath timer, illustrated breath patterns and gentle sound — in the stillness of the desert."},{"@type":"ItemList","name":"Ten practices for every day","itemListElement":[{"@type":"ListItem","position":1,"name":"Diaphragmatic Breathing","url":"https://www.neshimot.live/practices/diaphragmatic-breathing"},{"@type":"ListItem","position":2,"name":"Three-Part Breath","url":"https://www.neshimot.live/practices/three-part-breath"},{"@type":"ListItem","position":3,"name":"Coherent Breathing","url":"https://www.neshimot.live/practices/coherent-breathing"},{"@type":"ListItem","position":4,"name":"Box Breathing","url":"https://www.neshimot.live/practices/box-breathing"},{"@type":"ListItem","position":5,"name":"Alternate Nostril Breathing","url":"https://www.neshimot.live/practices/alternate-nostril-breathing"},{"@type":"ListItem","position":6,"name":"Physiological Sigh","url":"https://www.neshimot.live/practices/physiological-sigh"},{"@type":"ListItem","position":7,"name":"4-7-8 Breathing","url":"https://www.neshimot.live/practices/4-7-8-breathing"},{"@type":"ListItem","position":8,"name":"Humming Bee Breath","url":"https://www.neshimot.live/practices/humming-bee-breath"},{"@type":"ListItem","position":9,"name":"Skull-Shining Breath","url":"https://www.neshimot.live/practices/kapalabhati"},{"@type":"ListItem","position":10,"name":"Connected Breathing","url":"https://www.neshimot.live/practices/connected-breathing"}]}]}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&family=Frank+Ruhl+Libre:wght@400&text=%D9%86%D8%B3%D9%8A%D9%85%D7%A0%D7%A9%D7%99%D7%9E%D7%95%D7%AA%D7%A2%D7%91&display=swap" />
-  <link rel="stylesheet" href="/css/styles.css?v=5672e28e" />
+  <link rel="stylesheet" href="/css/styles.css?v=01a083ed" />
   <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -367,7 +368,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">01<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Foundation · Beginner · 5 min</p>
-      <h3 class="ch-title">Diaphragmatic Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/diaphragmatic-breathing">Diaphragmatic Breathing</a></h3>
       <p class="ch-alt">Belly breath</p>
       <p class="ch-summary">Most of us breathe high in the chest, recruiting the neck and shoulders for work that belongs to the diaphragm. This practice re-teaches the body its natural pattern: the diaphragm descends, the belly softens outward, and each breath becomes slower, deeper and quieter. It is the root of every other practice here.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -434,7 +435,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">02<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Foundation · Beginner · 4 min</p>
-      <h3 class="ch-title">Three-Part Breath</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/three-part-breath">Three-Part Breath</a></h3>
       <p class="ch-alt">Dirgha pranayama</p>
       <p class="ch-summary">A complete breath that maps the whole torso. You fill the lungs in three waves — belly, ribcage, upper chest — then empty them in reverse. It builds body awareness, expands breathing capacity and is a beautiful way to arrive at the start of any session.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -501,7 +502,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">03<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Balance · Beginner · 5 min</p>
-      <h3 class="ch-title">Coherent Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/coherent-breathing">Coherent Breathing</a></h3>
       <p class="ch-alt">Resonance breathing</p>
       <p class="ch-summary">Inhaling and exhaling evenly for about five and a half seconds each brings most adults to their resonance frequency — close to six breaths a minute. At this pace heart rhythm, blood pressure and breath begin to rise and fall together, creating a state that is calm and alert at once. Many breath therapists consider it the single most valuable daily practice.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -568,7 +569,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">04<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Balance · Beginner · 4 min</p>
-      <h3 class="ch-title">Box Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/box-breathing">Box Breathing</a></h3>
       <p class="ch-alt">Square breathing</p>
       <p class="ch-summary">Inhale, hold, exhale, hold — four counts each. The equal rhythm gives the mind a simple structure to follow, which is why pilots, first responders and special forces use it to stay composed and clear-headed under pressure.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -635,7 +636,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">05<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Balance · Beginner · 5 min</p>
-      <h3 class="ch-title">Alternate Nostril Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/alternate-nostril-breathing">Alternate Nostril Breathing</a></h3>
       <p class="ch-alt">Nadi shodhana</p>
       <p class="ch-summary">By guiding the breath through one nostril at a time, this classical practice slows the breath, sharpens attention and leaves a distinct feeling of balance. It is a favourite before meditation, study or sleep.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -702,7 +703,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">06<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Calm · Beginner · 3 min</p>
-      <h3 class="ch-title">Physiological Sigh</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/physiological-sigh">Physiological Sigh</a></h3>
       <p class="ch-alt">Cyclic sighing</p>
       <p class="ch-summary">Two inhales through the nose — a deep one, then a short top-up — followed by a long, slow exhale through the mouth. It is the body’s own reset: we sigh like this spontaneously after crying or before falling asleep. Just a few cycles can noticeably lower stress in real time.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -769,7 +770,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">07<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Calm · Beginner · 4 cycles · ~76 s</p>
-      <h3 class="ch-title">4-7-8 Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/4-7-8-breathing">4-7-8 Breathing</a></h3>
       <p class="ch-alt">The relaxing breath</p>
       <p class="ch-summary">Popularised by Dr. Andrew Weil from yogic pranayama, the 4-7-8 breath pairs a short inhale with a long hold and an even longer, audible exhale. It is a trusted tool for falling asleep, easing anxiety and interrupting cravings or anger.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -836,7 +837,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">08<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Calm · Beginner · 4 min</p>
-      <h3 class="ch-title">Humming Bee Breath</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/humming-bee-breath">Humming Bee Breath</a></h3>
       <p class="ch-alt">Bhramari</p>
       <p class="ch-summary">On every long exhale you hum a low, steady “mmm”, like a bee. The sound lengthens the exhale naturally, the vibration resonates through the face, throat and chest, and the mind is given something soothing to rest on. Sound and breath have been paired for healing in many traditions.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -903,7 +904,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">09<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Energy · Intermediate · 3 rounds · ~3 min</p>
-      <h3 class="ch-title">Skull-Shining Breath</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/kapalabhati">Skull-Shining Breath</a></h3>
       <p class="ch-alt">Kapalabhati</p>
       <p class="ch-summary">A cleansing, energising technique: short, sharp exhales through the nose driven by the lower belly, each followed by a passive inhale. Rounds of rhythmic pumping end with a calm breath-hold. Practise it in the morning for clarity and warmth — never before sleep.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -970,7 +971,7 @@
     <div class="ch-body reveal">
       <p class="ch-num">10<span> / 10</span></p>
       <p class="meta"><span class="dot"></span>Energy · Advanced · 3 min</p>
-      <h3 class="ch-title">Connected Breathing</h3>
+      <h3 class="ch-title"><a class="ch-title-link" href="/practices/connected-breathing">Connected Breathing</a></h3>
       <p class="ch-alt">Circular breath</p>
       <p class="ch-summary">In conscious connected breathing the inhale flows straight into the exhale and the exhale straight into the next inhale, forming an unbroken circle. The inhale is full and active; the exhale is simply released, never pushed. Central to many breath-therapy traditions, it can bring up strong sensations and emotions — this gentle daily version keeps the rhythm slow and the session short.</p>
       <h4 class="ch-h">How to practise</h4>
@@ -1149,6 +1150,22 @@
             <p class="lab-fine">Reference ranges from Buteyko practice: under 10s — strained · 10–20s — room to grow · 20–40s — good · 40s+ — excellent. A training gauge, not a medical test.</p>
           </div>
         </div>
+
+  <div class="panel reminder reveal" id="reminder">
+    <div class="rm-head">
+      <span class="rm-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 34h28M14 34a10 10 0 0 1 20 0"/><path d="M24 14v5M12.7 18.7l3.5 3.5M35.3 18.7l-3.5 3.5M7 27h4M37 27h4"/><path d="M18 40h12" opacity=".55"/></svg></span>
+      <div><h3 class="panel-title">A daily reminder</h3><p class="panel-sub">Pick a time and add a gentle daily reminder to your own calendar — no app, no account.</p></div>
+    </div>
+    <form class="rm-form" id="rm-form">
+      <label class="field rm-time"><span>Time</span><input type="time" id="rm-time" value="07:30" required /></label>
+      <label class="field rm-practice"><span>Practice</span><select id="rm-practice"><option value="">Any practice — I’ll choose</option><option value="diaphragmatic">Diaphragmatic Breathing</option><option value="three-part">Three-Part Breath</option><option value="coherent">Coherent Breathing</option><option value="box">Box Breathing</option><option value="alternate-nostril">Alternate Nostril Breathing</option><option value="physiological-sigh">Physiological Sigh</option><option value="4-7-8">4-7-8 Breathing</option><option value="humming">Humming Bee Breath</option><option value="kapalabhati">Skull-Shining Breath</option><option value="connected">Connected Breathing</option></select></label>
+      <div class="rm-actions">
+        <a class="btn btn-primary" id="rm-ics" href="/api/reminder" rel="nofollow"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Apple / Outlook calendar</a>
+        <a class="btn btn-ghost" id="rm-google" href="https://calendar.google.com/calendar/render" target="_blank" rel="noopener nofollow">Google Calendar</a>
+      </div>
+      <p class="rm-done" id="rm-done" role="status" hidden>Your reminder is ready — open the file to add the daily event to your calendar.</p>
+    </form>
+  </div>
         <div class="panel diary reveal" id="diary">
           <div class="diary-head">
             <div>
@@ -1189,6 +1206,7 @@
         <ul class="safety-list"><li class="reveal">Practise seated or lying down, ideally on a fairly empty stomach.</li><li class="reveal">Breathe through the nose unless a practice says otherwise.</li><li class="reveal">Never practise breath-holds or fast breathing in water, while driving, or anywhere fainting could be dangerous.</li><li class="reveal">Mild tingling or light-headedness can happen. If it does, return to natural breathing — and stop if you feel unwell.</li><li class="reveal">If you are pregnant, or live with a heart, lung, blood-pressure, seizure or psychiatric condition, consult a qualified professional before holds or fast-breathing techniques.</li><li class="reveal">These practices support wellbeing; they are not a substitute for medical care.</li></ul>
       </div>
     </section>
+
   </main>
 
   <footer class="footer">
@@ -1378,6 +1396,7 @@
       <div class="setup-actions">
         <button class="btn btn-primary" type="button" id="done-close">Return</button>
         <button class="link-btn" type="button" id="done-again">Practise again</button>
+        <button class="link-btn" type="button" id="done-remind">Make it daily — add a reminder</button>
       </div>
     </section>
 
@@ -1412,6 +1431,6 @@
     <div class="sr-only" aria-live="polite" id="pr-live"></div>
   </div>
 
-  <script type="module" src="/js/app.js?v=5672e28e"></script>
+  <script type="module" src="/js/app.js?v=01a083ed"></script>
 </body>
 </html>

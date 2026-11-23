@@ -1,5 +1,5 @@
 // Neshimot — application controller.
-import { EXERCISES, RITUALS, byId, cycleSeconds, roundsFor, catLabel, levelLabel, unitLabel } from './data.js';
+import { EXERCISES, RITUALS, byId, cycleSeconds, roundsFor, catLabel, levelLabel, unitLabel, practicePath, doseMinutes } from './data.js';
 import { setLang, t, isHe, locale } from './i18n.js';
 import { BreathAudio } from './audio.js';
 import { Session } from './session.js';
@@ -94,7 +94,7 @@ function initChrome() {
     ticking = false;
     const y = window.scrollY;
     nav.classList.toggle('is-scrolled', y > 40);
-    if (!reduceMotion.matches && y < hero.offsetHeight * 1.1) {
+    if (hero && !reduceMotion.matches && y < hero.offsetHeight * 1.1) {
       dunes.forEach((d) => (d.style.transform = `translateY(${(y * +d.dataset.depth).toFixed(1)}px)`));
       sun.style.translate = `0 ${(y * 0.35).toFixed(1)}px`;
       heroInner.style.opacity = Math.max(0, 1 - y / (hero.offsetHeight * 0.6)).toFixed(3);
@@ -133,7 +133,7 @@ function initChrome() {
     (entries) => {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
-        const id = e.target.id || 'practices';
+        const id = e.target.classList.contains('chapters') ? 'practices' : e.target.id;
         links.forEach((a, k) => a.classList.toggle('is-active', k === id));
       }
     },
@@ -970,6 +970,13 @@ function initPractice() {
     }
     $('#mood-thanks').hidden = false;
   });
+  $('#done-remind')?.addEventListener('click', () => {
+    if (!$('#reminder')) return;
+    P.pendingScroll = '#reminder';
+    const wasPushed = P.pushed;
+    closePractice();
+    if (!wasPushed) scrollToPending();
+  });
   $('#done-again').addEventListener('click', () => {
     renderSetup();
     setView('setup');
@@ -1210,6 +1217,7 @@ function streakDays() {
 }
 
 function renderProgress() {
+  if (!$('#week')) return;
   const log = store.get('neshimot.log', []);
   const days = new Map();
   log.forEach((s) => days.set(s.d, (days.get(s.d) || 0) + s.m));
@@ -1254,6 +1262,7 @@ const fmtDay = (d) => new Date(`${d}T12:00:00`).toLocaleDateString(locale(), { d
 
 function renderCP() {
   const svg = $('#cp-chart');
+  if (!svg) return;
   const all = store.get('neshimot.cp', []);
   const data = all.slice(-12);
   const W = 420, H = 150, L = 30, R = 410, T = 10, B = 124;
@@ -1295,6 +1304,7 @@ function renderCP() {
 }
 
 function initProgress() {
+  if (!$('#cp-btn')) return;
   renderProgress();
   const btn = $('#cp-btn');
   const box = $('#cp');
@@ -1468,6 +1478,7 @@ function exportDiary() {
 
 function initDiary() {
   const sel = $('#dc-practice');
+  if (!sel) return;
   sel.innerHTML = `<option value="">${esc(t('diary.general'))}</option>` + EXERCISES.map((e) => `<option value="${e.id}">${esc(e.name)}</option>`).join('');
   $('#diary-new').addEventListener('click', () => {
     const f = $('#diary-compose');
@@ -1619,6 +1630,92 @@ function initFigures() {
 }
 
 /* =================================================================
+   Daily reminder — a repeating calendar event at the time the visitor picks.
+   Apple / Outlook get a .ics file from /api/reminder (iPhones show "Add to Calendar");
+   Google Calendar opens its own event form, already filled in.
+   ================================================================= */
+const icsStamp = (d) => `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
+
+/** The next time the clock reads hh:mm — today if it's still ahead, otherwise tomorrow. */
+function nextAt(hhmm) {
+  const [h, m] = (/^\d{2}:\d{2}$/.test(hhmm) ? hhmm : '07:30').split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  if (d.getTime() < Date.now() + 2 * 60000) d.setDate(d.getDate() + 1);
+  return d;
+}
+
+function reminderEvent() {
+  const id = $('#rm-practice').value;
+  const ex = id ? byId(id) : null;
+  const lang = isHe() ? 'he' : 'en';
+  const start = nextAt($('#rm-time').value);
+  const min = ex ? doseMinutes(ex) : 5;
+  const url = `https://www.neshimot.live${ex ? practicePath(ex, lang) : isHe() ? '/he' : '/'}`;
+  return {
+    id: ex ? ex.id : 'any',
+    lang,
+    start,
+    end: new Date(start.getTime() + min * 60000),
+    title: ex ? t('rm.eventTitle', { name: ex.name }) : t('rm.eventAny'),
+    desc: t('rm.eventDesc', { min, url }),
+  };
+}
+
+function reminderLinks(ev) {
+  const g = new URLSearchParams({ action: 'TEMPLATE', text: ev.title, details: ev.desc, dates: `${icsStamp(ev.start)}/${icsStamp(ev.end)}`, recur: 'RRULE:FREQ=DAILY' });
+  try {
+    g.set('ctz', Intl.DateTimeFormat().resolvedOptions().timeZone);
+  } catch (_) {}
+  const stamp = icsStamp(ev.start);
+  const ics = new URLSearchParams({ id: ev.id, lang: ev.lang, d: stamp.slice(0, 8), t: stamp.slice(9, 13) });
+  return { google: `https://calendar.google.com/calendar/render?${g}`, ics: `/api/reminder?${ics}` };
+}
+
+function initReminder() {
+  const form = $('#rm-form');
+  if (!form) return;
+  const time = $('#rm-time');
+  const sel = $('#rm-practice');
+  const saved = store.get('neshimot.reminder', null) || {};
+  if (/^\d{2}:\d{2}$/.test(saved.time || '')) time.value = saved.time;
+  // a practice page offers its own practice; elsewhere, the last choice
+  if (!form.dataset.fixed && [...sel.options].some((o) => o.value === saved.id)) sel.value = saved.id;
+  const update = () => {
+    const links = reminderLinks(reminderEvent());
+    $('#rm-google').href = links.google;
+    $('#rm-ics').href = links.ics;
+  };
+  const remember = () => store.set('neshimot.reminder', { time: time.value, id: form.dataset.fixed ? saved.id || '' : sel.value });
+  time.addEventListener('input', () => {
+    update();
+    remember();
+  });
+  sel.addEventListener('change', () => {
+    update();
+    remember();
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    $('#rm-ics').click();
+  });
+  const done = () => {
+    remember();
+    $('#rm-done').hidden = false;
+  };
+  // refresh just before leaving, so a page left open overnight still starts on the right day
+  $('#rm-ics').addEventListener('click', () => {
+    update();
+    done();
+  });
+  $('#rm-google').addEventListener('click', () => {
+    update();
+    remember();
+  });
+  update();
+}
+
+/* =================================================================
    Theme — the boot script in <head> already applied the saved choice (or the system's);
    the toggle sweeps the new theme across the page in a circle from the button.
    ================================================================= */
@@ -1733,6 +1830,7 @@ initLab();
 initProgress();
 initFigures();
 initDiary();
+initReminder();
 checkGate().then(() => {
   flushPendingLead();
   renderDiary();

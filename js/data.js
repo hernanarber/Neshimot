@@ -19,6 +19,7 @@ export const CATEGORIES = {
 export const EXERCISES = [
   {
     id: 'diaphragmatic',
+    slug: 'diaphragmatic-breathing',
     name: 'Diaphragmatic Breathing',
     alt: 'Belly breath',
     category: 'Foundation',
@@ -52,6 +53,7 @@ export const EXERCISES = [
   },
   {
     id: 'three-part',
+    slug: 'three-part-breath',
     name: 'Three-Part Breath',
     alt: 'Dirgha pranayama',
     category: 'Foundation',
@@ -87,6 +89,7 @@ export const EXERCISES = [
   },
   {
     id: 'coherent',
+    slug: 'coherent-breathing',
     name: 'Coherent Breathing',
     alt: 'Resonance breathing',
     category: 'Balance',
@@ -118,6 +121,7 @@ export const EXERCISES = [
   },
   {
     id: 'box',
+    slug: 'box-breathing',
     name: 'Box Breathing',
     alt: 'Square breathing',
     category: 'Balance',
@@ -155,6 +159,7 @@ export const EXERCISES = [
   },
   {
     id: 'alternate-nostril',
+    slug: 'alternate-nostril-breathing',
     name: 'Alternate Nostril Breathing',
     alt: 'Nadi shodhana',
     category: 'Balance',
@@ -191,6 +196,7 @@ export const EXERCISES = [
   },
   {
     id: 'physiological-sigh',
+    slug: 'physiological-sigh',
     name: 'Physiological Sigh',
     alt: 'Cyclic sighing',
     category: 'Calm',
@@ -223,6 +229,7 @@ export const EXERCISES = [
   },
   {
     id: '4-7-8',
+    slug: '4-7-8-breathing',
     name: '4-7-8 Breathing',
     alt: 'The relaxing breath',
     category: 'Calm',
@@ -261,6 +268,7 @@ export const EXERCISES = [
   },
   {
     id: 'humming',
+    slug: 'humming-bee-breath',
     name: 'Humming Bee Breath',
     alt: 'Bhramari',
     category: 'Calm',
@@ -294,6 +302,7 @@ export const EXERCISES = [
   },
   {
     id: 'kapalabhati',
+    slug: 'kapalabhati',
     name: 'Skull-Shining Breath',
     alt: 'Kapalabhati',
     category: 'Energy',
@@ -342,6 +351,7 @@ export const EXERCISES = [
   },
   {
     id: 'connected',
+    slug: 'connected-breathing',
     name: 'Connected Breathing',
     alt: 'Circular breath',
     category: 'Energy',
@@ -481,6 +491,13 @@ export function roundsFor(ex, dose, pace = 1) {
 }
 
 export const byId = (id) => EXERCISES.find((e) => e.id === id);
+
+/** The practice's own page: /practices/<slug> in English, /he/practices/<slug> in Hebrew. */
+export const practicePath = (ex, lang = 'en') => `${lang === 'he' ? '/he' : ''}/practices/${ex.slug}`;
+
+/** Typical length of one practice at its default dose, in whole minutes. */
+export const doseMinutes = (ex) =>
+  ex.dose.type === 'minutes' ? ex.dose.value : Math.max(1, Math.ceil((ex.dose.value * cycleSeconds(ex) + (ex.outro ? ex.outro.s : 0)) / 60));
 
 // ---------- Language ----------
 
