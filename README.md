@@ -60,6 +60,7 @@ same phases in the same order, with their Hebrew cue and hint.
 | Vercel setting | Purpose |
 | --- | --- |
 | `HUBSPOT_TOKEN` (environment variable) | HubSpot private-app token (scopes: `crm.objects.contacts.read/write`, `crm.lists.read/write`). Without it the sign-up step stays off and the site works as a fully open practice site. Sign-ups go to the segments "Neshimot — Website sign-ups", "Neshimot — Email opt-in" (ticked box) and "Neshimot — Hebrew site" (signed up on `/he`). |
+| `NESHIMOT_SIGNUP=off` (environment variable) | Pauses the sign-up while keeping the HubSpot token: every practice and the diary are open to everyone. Delete the variable and redeploy to turn the sign-up back on. |
 | Web Analytics (project → Analytics → Enable) | Anonymous, cookie-free page-view counts. The script is already on both pages. |
 
 ## Run locally

@@ -7,6 +7,7 @@
 // Env: HUBSPOT_TOKEN — a HubSpot private-app token with crm.objects.contacts.read/write
 //      and crm.lists.read/write scopes. Without it, GET reports ready:false and the
 //      website simply doesn't show the sign-up step.
+//      NESHIMOT_SIGNUP=off — pauses the sign-up while keeping the token (delete it to resume).
 
 const API = process.env.HUBSPOT_API_BASE || 'https://api.hubapi.com';
 const LISTS = {
@@ -86,7 +87,10 @@ async function addToList(token, key, id) {
 
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
-  const token = process.env.HUBSPOT_TOKEN;
+  // NESHIMOT_SIGNUP=off pauses the sign-up without removing the HubSpot token:
+  // the website then runs fully open (every practice and the diary, no name or email asked)
+  const paused = String(process.env.NESHIMOT_SIGNUP || '').toLowerCase() === 'off';
+  const token = paused ? '' : process.env.HUBSPOT_TOKEN;
 
   if (req.method === 'GET') return res.status(200).json({ ready: !!token });
   if (req.method !== 'POST') {
